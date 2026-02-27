@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gustaffo InteractiveQ - API Documentation</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0f1117;color:#c9d1d9;line-height:1.6}
+  .container{max-width:1200px;margin:0 auto;padding:20px}
+  header{background:linear-gradient(135deg,#161b22,#1a1f2e);border-bottom:1px solid #30363d;padding:30px 0;margin-bottom:30px}
+  header .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+  h1{font-size:28px;color:#58a6ff;font-weight:600}
+  h1 span{color:#8b949e;font-weight:300;font-size:16px}
+  .stats{display:flex;gap:20px;flex-wrap:wrap}
+  .stat{background:#21262d;border:1px solid #30363d;border-radius:8px;padding:8px 16px;text-align:center}
+  .stat .num{font-size:22px;font-weight:700;color:#58a6ff}
+  .stat .label{font-size:11px;color:#8b949e;text-transform:uppercase;letter-spacing:1px}
+  .search-bar{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:15px 20px;margin-bottom:25px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .search-bar input{flex:1;min-width:200px;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 14px;color:#c9d1d9;font-size:14px;outline:none;transition:border-color .2s}
+  .search-bar input:focus{border-color:#58a6ff}
+  .filter-btns{display:flex;gap:6px;flex-wrap:wrap}
+  .filter-btn{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:6px 12px;color:#8b949e;cursor:pointer;font-size:12px;transition:all .2s;font-weight:500}
+  .filter-btn:hover,.filter-btn.active{background:#58a6ff;color:#fff;border-color:#58a6ff}
+  .project-section{margin-bottom:35px}
+  .project-header{background:linear-gradient(135deg,#161b22,#1c2333);border:1px solid #30363d;border-radius:12px;padding:18px 24px;margin-bottom:16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .2s}
+  .project-header:hover{border-color:#58a6ff;background:linear-gradient(135deg,#161b22,#1a2540)}
+  .project-header h2{font-size:20px;color:#e6edf3;font-weight:600}
+  .project-header h2 .badge{background:#58a6ff22;color:#58a6ff;font-size:12px;padding:3px 10px;border-radius:12px;margin-left:10px;font-weight:500}
+  .project-header .chevron{color:#8b949e;font-size:18px;transition:transform .3s}
+  .project-header.collapsed .chevron{transform:rotate(-90deg)}
+  .component{background:#161b22;border:1px solid #30363d;border-radius:10px;margin-bottom:12px;overflow:hidden}
+  .component-header{padding:14px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s;border-bottom:1px solid transparent}
+  .component-header:hover{background:#1c2333}
+  .component-header.open{border-bottom-color:#30363d;background:#1a1f2e}
+  .component-header h3{font-size:15px;color:#e6edf3;font-weight:500;display:flex;align-items:center;gap:8px}
+  .component-header .count{background:#30363d;color:#8b949e;font-size:11px;padding:2px 8px;border-radius:10px}
+  .component-header .arrow{color:#484f58;transition:transform .3s;font-size:12px}
+  .component-header.open .arrow{transform:rotate(90deg)}
+  .endpoints{display:none;padding:4px 0}
+  .endpoints.show{display:block}
+  .endpoint{display:flex;align-items:flex-start;padding:10px 20px;border-bottom:1px solid #21262d;transition:background .15s;gap:12px}
+  .endpoint:last-child{border-bottom:none}
+  .endpoint:hover{background:#1c2333}
+  .method{font-size:11px;font-weight:700;padding:4px 8px;border-radius:4px;min-width:60px;text-align:center;letter-spacing:.5px;flex-shrink:0;margin-top:2px}
+  .method.get{background:#23863620;color:#238636;border:1px solid #23863640}
+  .method.post{background:#1f6feb20;color:#58a6ff;border:1px solid #1f6feb40}
+  .method.put{background:#d2992220;color:#d29922;border:1px solid #d2992240}
+  .method.delete{background:#da363620;color:#f85149;border:1px solid #da363640}
+  .method.patch{background:#a371f720;color:#a371f7;border:1px solid #a371f740}
+  .path{font-family:'Cascadia Code','Fira Code',Consolas,monospace;color:#e6edf3;font-size:13px;word-break:break-all;flex:1}
+  .path .param{color:#d2a8ff}
+  .desc{color:#8b949e;font-size:12px;min-width:200px;max-width:300px;flex-shrink:0;text-align:right}
+  .hidden{display:none!important}
+  .no-results{text-align:center;padding:40px;color:#484f58;font-size:16px}
+  @media(max-width:768px){
+    .endpoint{flex-wrap:wrap}
+    .desc{text-align:left;max-width:100%;min-width:auto;margin-top:4px}
+    header .container{flex-direction:column;align-items:flex-start}
+  }
+  .project-icon{font-size:22px;margin-right:6px}
+  .section-divider{height:1px;background:linear-gradient(90deg,transparent,#30363d,transparent);margin:10px 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div>
+      <h1>Gustaffo InteractiveQ <span>API Documentation</span></h1>
+      <p style="color:#8b949e;margin-top:4px;font-size:13px">All backend endpoints grouped by component &bull; Auto-generated</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="totalEndpoints">0</div><div class="label">Endpoints</div></div>
+      <div class="stat"><div class="num" id="totalComponents">0</div><div class="label">Components</div></div>
+      <div class="stat"><div class="num" id="totalProjects">3</div><div class="label">Projects</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="search-bar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b949e" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input type="text" id="search" placeholder="Search endpoints by path, method, or description..." autocomplete="off">
+    <div class="filter-btns">
+      <span class="filter-btn active" data-filter="all">All</span>
+      <span class="filter-btn" data-filter="get">GET</span>
+      <span class="filter-btn" data-filter="post">POST</span>
+      <span class="filter-btn" data-filter="put">PUT</span>
+      <span class="filter-btn" data-filter="delete">DELETE</span>
+      <span class="filter-btn" data-filter="patch">PATCH</span>
+    </div>
+  </div>
+
+  <div id="content"></div>
+  <div class="no-results hidden" id="noResults">No endpoints match your search.</div>
+</div>
+
+<script>
+const DATA = [
+  {
+    project: "interactiveq \u2014 Main Backend",
+    icon: "\u2699\uFE0F",
+    components: [
+      {
+        name: "ASM \u2013 Tickets",
+        endpoints: [
+          { method: "GET", path: "/asm/tickets", desc: "Get paginated tickets with filtering, search, and sorting" },
+          { method: "POST", path: "/asm/tickets/widget", desc: "Create ticket from widget submission" }
+        ]
+      },
+      {
+        name: "CMS \u2013 Templates",
+        endpoints: [
+          { method: "GET", path: "/cms/templates", desc: "Get all CMS templates grouped by language" },
+          { method: "GET", path: "/cms/templates/{templateKey}", desc: "Find templates by key" },
+          { method: "GET", path: "/cms/templates/instances/{templateId}", desc: "Get template instance with alternatives" },
+          { method: "GET", path: "/cms/templates/instances/{templateId}/email-view", desc: "Render email view for template" },
+          { method: "GET", path: "/cms/templates/{templateId}/sections", desc: "List content sections for template" },
+          { method: "POST", path: "/cms/templates", desc: "Create new CMS template" },
+          { method: "POST", path: "/cms/templates/{templateId}/sections", desc: "Create content section for template" },
+          { method: "PUT", path: "/cms/templates/{templateId}", desc: "Update template content" },
+          { method: "PUT", path: "/cms/templates/{templateKey}/publish", desc: "Publish template by key" },
+          { method: "PUT", path: "/cms/templates/instances/{templateKey}/publish", desc: "Publish template instance by ID" },
+          { method: "DELETE", path: "/cms/templates/{templateId}", desc: "Soft delete template instance" },
+          { method: "DELETE", path: "/cms/templates/{templateId}/final", desc: "Permanently delete template instance" },
+          { method: "POST", path: "/cms/templates/{templateId}/clone", desc: "Clone template instance" },
+          { method: "POST", path: "/cms/templates/{templateId}/languages/{languageId}/clone", desc: "Clone template for new language" }
+        ]
+      },
+      {
+        name: "CMS \u2013 Sections",
+        endpoints: [
+          { method: "GET", path: "/cms/sections/{sectionId}", desc: "Get template section by ID" },
+          { method: "GET", path: "/cms/sections/{sectionId}/items", desc: "Get all items for a section" },
+          { method: "PATCH", path: "/cms/sections/{sectionId}", desc: "Update section properties" },
+          { method: "POST", path: "/cms/sections/{sectionId}/items", desc: "Add template item to section" }
+        ]
+      },
+      {
+        name: "CMS \u2013 Email Templates",
+        endpoints: [
+          { method: "PUT", path: "/cms/emails/{emailKey}", desc: "Update email template content and convert via MJML" },
+          { method: "POST", path: "/cms/emails/_resolve-and-send", desc: "Resolve and send templated email" },
+          { method: "POST", path: "/cms/emails", desc: "Save or update email template" }
+        ]
+      },
+      {
+        name: "CMS \u2013 Languages",
+        endpoints: [
+          { method: "GET", path: "/cms/languages", desc: "List available CMS languages" }
+        ]
+      },
+      {
+        name: "CMS \u2013 Public Templates",
+        endpoints: [
+          { method: "GET", path: "/p/cms/templates/{templateKey}/hotels/{hotelId}/languages/{languageCode}", desc: "Get rendered template for hotel/language (public)" },
+          { method: "GET", path: "/p/cms/templates/{languageCode}/greeting", desc: "Get localized greeting (public)" }
+        ]
+      },
+      {
+        name: "CMS \u2013 QR Codes",
+        endpoints: [
+          { method: "GET", path: "/cms/qr/", desc: "Generate QR code image from URL parameter" }
+        ]
+      },
+      {
+        name: "CMS \u2013 Currency Converter",
+        endpoints: [
+          { method: "GET", path: "/currency-converter/euro/{euro}/kuna", desc: "Convert Euro to Croatian Kuna" }
+        ]
+      },
+      {
+        name: "CMS \u2013 Seasons",
+        endpoints: [
+          { method: "GET", path: "/seasons", desc: "Get all season definitions with periods" },
+          { method: "POST", path: "/seasons", desc: "Create new season with periods" },
+          { method: "POST", path: "/seasons/{id}", desc: "Update existing season definition" }
+        ]
+      },
+      {
+        name: "CMS \u2013 Static Strings",
+        endpoints: [
+          { method: "GET", path: "/fieldPrefill/{lang}/{whichDefaultValue}", desc: "Fetch static string values by language and key" }
+        ]
+      },
+      {
+        name: "Configuration \u2013 Cache",
+        endpoints: [
+          { method: "GET", path: "/cache/status", desc: "Get cache status for all cache managers" },
+          { method: "POST", path: "/cache/clear/{cacheName}", desc: "Clear specific cache by name" },
+          { method: "POST", path: "/cache/clear-all", desc: "Clear all caches" }
+        ]
+      },
+      {
+        name: "Configuration \u2013 Captcha",
+        endpoints: [
+          { method: "GET", path: "/captcha/{token}", desc: "Assess reCAPTCHA Enterprise token validity" }
+        ]
+      },
+      {
+        name: "Configuration \u2013 Config",
+        endpoints: [
+          { method: "GET", path: "/configuration/{type}", desc: "Get configurations by type" },
+          { method: "POST", path: "/configuration/upsert", desc: "Insert or update configurations" }
+        ]
+      },
+      {
+        name: "Configuration \u2013 Hotels",
+        endpoints: [
+          { method: "GET", path: "/hotels", desc: "Get all hotels (admin)" },
+          { method: "GET", path: "/hotels/{id}", desc: "Get hotel by ID (admin)" },
+          { method: "GET", path: "/hotels/{hotelId}/related", desc: "Get hotels related to a hotel" },
+          { method: "GET", path: "/hotels/p/{hotelId}/related", desc: "Get related hotels (public)" },
+          { method: "GET", path: "/hotels/p/hotel-by-name/{hotelName}", desc: "Get hotel by name (public)" },
+          { method: "GET", path: "/hotels/p", desc: "Get all enabled hotels (public)" },
+          { method: "POST", path: "/hotels/{hotelId}/uploadImage", desc: "Upload hotel image to S3" },
+          { method: "POST", path: "/hotels/{hotelId}/uploadImageFromUrl", desc: "Upload hotel image from URL" },
+          { method: "GET", path: "/hotels/{hotelId}/tags", desc: "Get tags for hotel" },
+          { method: "POST", path: "/hotels/{hotelId}/tags", desc: "Add tag to hotel" },
+          { method: "PATCH", path: "/hotels/{id}", desc: "Update hotel information" },
+          { method: "POST", path: "/hotels", desc: "Create new hotel" }
+        ]
+      },
+      {
+        name: "Configuration \u2013 Style",
+        endpoints: [
+          { method: "GET", path: "/style/getStyle", desc: "Get style configuration for user" },
+          { method: "POST", path: "/style/upsertStyle", desc: "Insert or update style with colors and logo" }
+        ]
+      },
+      {
+        name: "Configuration \u2013 Tenant",
+        endpoints: [
+          { method: "GET", path: "/tenant/isOwner", desc: "Check if user is tenant owner" }
+        ]
+      },
+      {
+        name: "Confirmations",
+        endpoints: [
+          { method: "GET", path: "/confirmations", desc: "Get paginated confirmations with caching" },
+          { method: "GET", path: "/confirmations/preview/{notificationLogId}", desc: "Preview notification log" },
+          { method: "POST", path: "/confirmations/send-proforma/{notificationLogId}", desc: "Send proforma/payment request on demand" },
+          { method: "POST", path: "/confirmations/preview/in-edit/{notificationLogId}", desc: "Preview notification during editing" },
+          { method: "GET", path: "/confirmations/payments/{bookingNumber}", desc: "Get payment instructions (cached)" },
+          { method: "GET", path: "/confirmations/payments/snapshots/{bookingNumber}", desc: "Get payment status snapshot" },
+          { method: "GET", path: "/confirmations/markEmailOpening/{id}", desc: "Track email opening (1x1 pixel)" }
+        ]
+      },
+      {
+        name: "Confirmations \u2013 Newsletter",
+        endpoints: [
+          { method: "GET", path: "/confirmations/newsletter/{id}", desc: "Confirm newsletter subscription (double opt-in)" }
+        ]
+      },
+      {
+        name: "Confirmations \u2013 Proforma",
+        endpoints: [
+          { method: "POST", path: "/payments/proforma/{reservationCode}/_send", desc: "Send proforma for reservation" }
+        ]
+      },
+      {
+        name: "Contacts",
+        endpoints: [
+          { method: "GET", path: "/contacts/guestData", desc: "Find guest/contact data by filters" },
+          { method: "GET", path: "/contacts/rewards", desc: "Get rewards/loyalty data by email" }
+        ]
+      },
+      {
+        name: "Offers \u2013 IBE",
+        endpoints: [
+          { method: "POST", path: "/ibe/rooms/{room}/additional-services", desc: "Get price quote and services for room" }
+        ]
+      },
+      {
+        name: "Offers \u2013 Booking",
+        endpoints: [
+          { method: "POST", path: "/bookings/confirmation", desc: "Send booking confirmation email" }
+        ]
+      },
+      {
+        name: "Offers \u2013 Offer Management",
+        endpoints: [
+          { method: "GET", path: "/bookOffer/{id}", desc: "Book offer with room/rate plan parameters" },
+          { method: "GET", path: "/bookCustomizedOffer/{id}/{whichRoom}", desc: "Book customized offer" },
+          { method: "GET", path: "/bookCustomizedOffer/{id}/{comment}/{whichRoom}", desc: "Book customized offer with comment" },
+          { method: "POST", path: "/bookCustomizedOffer/{id}", desc: "Book customized offer via request body" },
+          { method: "GET", path: "/markEmailOpening/{id}", desc: "Track email opening (1x1 pixel)" },
+          { method: "GET", path: "/offers", desc: "Get all offers" },
+          { method: "POST", path: "/inquiries/{inquiryId}/resend", desc: "Resend offer to customer" },
+          { method: "POST", path: "/inquiries/{inquiryId}/no-offer-found", desc: "Send 'no offer found' email" },
+          { method: "GET", path: "/shareEmailTemplate/{inquiryId}/{email}", desc: "Share email template with email" },
+          { method: "GET", path: "/shareEmailTemplate/{inquiryId}", desc: "Share via WhatsApp" },
+          { method: "GET", path: "/sendReports", desc: "Trigger daily reports" },
+          { method: "GET", path: "/sendReminders", desc: "Trigger daily reminders" },
+          { method: "GET", path: "/getAllOffers", desc: "Get paginated offers with caching" }
+        ]
+      },
+      {
+        name: "Offers \u2013 Submit",
+        endpoints: [
+          { method: "POST", path: "/offer/submit", desc: "Submit offer with multi-hotel/travel selections" },
+          { method: "POST", path: "/offer/preview", desc: "Preview offer without persisting" }
+        ]
+      },
+      {
+        name: "Offers \u2013 Reporter",
+        endpoints: [
+          { method: "GET", path: "/api/v1/report/test", desc: "Test report generation" }
+        ]
+      },
+      {
+        name: "Payments",
+        endpoints: [
+          { method: "GET", path: "/payments/initiate/{reservationId}/{notificationLogId}/{paymentInstructionsId}", desc: "Initiate payment from instruction" },
+          { method: "GET", path: "/payments/initiate/1/{paymentInstructionsId}", desc: "Initiate payment by instruction ID" },
+          { method: "GET", path: "/payments/cb/{bookingNumber}/{transaction}/{paymentInstructionId}", desc: "Payment callback handler" },
+          { method: "POST", path: "/payments/cb/{bookingNumber}/{transaction}/{paymentInstructionId}", desc: "Payment callback handler (POST)" },
+          { method: "GET", path: "/payments/status/{paymentInstruction}", desc: "Get payment status" },
+          { method: "GET", path: "/payments/status/notifications/{notificationLogId}", desc: "Get payment status by notification" },
+          { method: "POST", path: "/payments", desc: "Create payment from frontend" },
+          { method: "GET", path: "/payments/initiate/{paymentInstructionsId}", desc: "Initiate manual payment" },
+          { method: "GET", path: "/payments/manual/status/{paymentInstruction}", desc: "Get manual payment status" },
+          { method: "GET", path: "/payments/manual/{paymentInstruction}", desc: "Manual payment callback (GET)" },
+          { method: "POST", path: "/payments/manual/{paymentInstruction}", desc: "Manual payment callback (POST)" },
+          { method: "GET", path: "/payments", desc: "Get paginated manual payments" },
+          { method: "POST", path: "/payments/manual/email/{paymentInstructionId}", desc: "Send manual payment email" }
+        ]
+      },
+      {
+        name: "Payment Settings",
+        endpoints: [
+          { method: "GET", path: "/payment-configurations/{hotelId}", desc: "Get payment configuration for hotel" },
+          { method: "POST", path: "/payment-configurations/{hotelId}", desc: "Update payment configuration" }
+        ]
+      },
+      {
+        name: "Saferpay Transactions",
+        endpoints: [
+          { method: "POST", path: "/saferpay-transactions/sync/{hotelId}", desc: "Trigger Saferpay transaction sync" }
+        ]
+      },
+      {
+        name: "Users (RBAC)",
+        endpoints: [
+          { method: "POST", path: "/users", desc: "Create new user" },
+          { method: "GET", path: "/users", desc: "Get all local users" },
+          { method: "POST", path: "/users/sync", desc: "Sync users from Cognito" },
+          { method: "DELETE", path: "/users/{username}", desc: "Delete user" },
+          { method: "PUT", path: "/users", desc: "Update user information" },
+          { method: "GET", path: "/users/my/permissions", desc: "Get current user permissions" }
+        ]
+      },
+      {
+        name: "Notifications",
+        endpoints: [
+          { method: "POST", path: "/notifications/booking", desc: "Process booking notification (public webhook)" },
+          { method: "POST", path: "/notifications/internal/booking", desc: "Process internal booking notification" },
+          { method: "POST", path: "/notifications/tc/booking", desc: "Process TravelClick booking notification" },
+          { method: "POST", path: "/notifications/bulk/resend", desc: "Bulk resend confirmations by codes" },
+          { method: "GET", path: "/notifications/{notificationLogId}/{reservationCode}", desc: "List notifications for reservation" },
+          { method: "GET", path: "/notifications/{notificationLogId}", desc: "Get notification log by ID" },
+          { method: "POST", path: "/notifications/reminder/{notificationLogId}", desc: "Send payment reminder" }
+        ]
+      },
+      {
+        name: "Landing Zone",
+        endpoints: [
+          { method: "GET", path: "/landing/validateCode", desc: "Validate discount code for hotel and date" },
+          { method: "GET", path: "/landing/code", desc: "Get valid discount code for hotel" }
+        ]
+      },
+      {
+        name: "Experiences",
+        endpoints: [
+          { method: "GET", path: "/experiences", desc: "Get paginated experiences" },
+          { method: "GET", path: "/experiences/{id}", desc: "Get experience by ID" },
+          { method: "POST", path: "/experiences", desc: "Create new experience" },
+          { method: "PUT", path: "/experiences/{id}", desc: "Update experience" },
+          { method: "DELETE", path: "/experiences/{id}", desc: "Delete experience" },
+          { method: "GET", path: "/experiences/templates", desc: "Get paginated experience templates" },
+          { method: "GET", path: "/experiences/templates/{id}", desc: "Get template by ID" },
+          { method: "POST", path: "/experiences/templates", desc: "Create template" },
+          { method: "PUT", path: "/experiences/templates/{id}", desc: "Update template" },
+          { method: "DELETE", path: "/experiences/templates/{id}", desc: "Delete template" },
+          { method: "GET", path: "/experiences/policies", desc: "Get eligibility policies" },
+          { method: "GET", path: "/experiences/policies/{id}", desc: "Get policy by ID" },
+          { method: "POST", path: "/experiences/policies", desc: "Create policy" },
+          { method: "PUT", path: "/experiences/policies/{id}", desc: "Update policy" },
+          { method: "DELETE", path: "/experiences/policies/{id}", desc: "Delete policy" },
+          { method: "GET", path: "/experiences/bookings", desc: "Get paginated experience bookings" },
+          { method: "GET", path: "/experiences/bookings/{id}", desc: "Get booking by ID" },
+          { method: "POST", path: "/experiences/bookings", desc: "Create booking" },
+          { method: "PUT", path: "/experiences/bookings/{id}", desc: "Update booking" },
+          { method: "POST", path: "/experiences/bookings/{id}/confirm", desc: "Confirm booking" },
+          { method: "POST", path: "/experiences/bookings/{id}/cancel", desc: "Cancel booking" }
+        ]
+      },
+      {
+        name: "Loyalty",
+        endpoints: [
+          { method: "GET", path: "/loyalty/accounts", desc: "Get loyalty accounts with pagination" },
+          { method: "GET", path: "/loyalty/accounts/by-email", desc: "Get account by email" },
+          { method: "GET", path: "/loyalty/accounts/{id}", desc: "Get account by ID" },
+          { method: "GET", path: "/loyalty/accounts/{id}/transactions", desc: "Get account transactions" },
+          { method: "GET", path: "/loyalty/transactions", desc: "Get all transactions" },
+          { method: "POST", path: "/loyalty/redeem", desc: "Redeem loyalty points" },
+          { method: "POST", path: "/loyalty/award", desc: "Award loyalty points" },
+          { method: "POST", path: "/loyalty/refund", desc: "Refund loyalty points" }
+        ]
+      },
+      {
+        name: "Vouchers",
+        endpoints: [
+          { method: "GET", path: "/vouchers", desc: "Get paginated vouchers" },
+          { method: "GET", path: "/vouchers/{id}", desc: "Get voucher by ID" },
+          { method: "POST", path: "/vouchers", desc: "Create voucher" },
+          { method: "PUT", path: "/vouchers/{id}", desc: "Update voucher" },
+          { method: "DELETE", path: "/vouchers/{id}", desc: "Delete voucher" },
+          { method: "POST", path: "/vouchers/{id}/cancel", desc: "Cancel voucher" },
+          { method: "POST", path: "/vouchers/validate", desc: "Validate voucher" }
+        ]
+      },
+      {
+        name: "Rules",
+        endpoints: [
+          { method: "GET", path: "/rules", desc: "Get paginated business rules" },
+          { method: "GET", path: "/rules/{id}", desc: "Get rule by ID" },
+          { method: "POST", path: "/rules", desc: "Create business rule" },
+          { method: "PUT", path: "/rules/{id}", desc: "Update rule" },
+          { method: "DELETE", path: "/rules/{id}", desc: "Delete rule" },
+          { method: "POST", path: "/rules/{id}/activate", desc: "Activate rule" },
+          { method: "POST", path: "/rules/{id}/deactivate", desc: "Deactivate rule" }
+        ]
+      },
+      {
+        name: "Other \u2013 Connectors Mock (PHOBS)",
+        endpoints: [
+          { method: "POST", path: "/connectors/phobs/mock", desc: "Handle test/ping request" },
+          { method: "GET", path: "/connectors/phobs/mock/languages", desc: "Get available languages" },
+          { method: "GET", path: "/connectors/phobs/mock/properties", desc: "Get properties" },
+          { method: "GET", path: "/connectors/phobs/mock/destinations", desc: "Get destinations" },
+          { method: "GET", path: "/connectors/phobs/mock/property-groups", desc: "Get property groups" },
+          { method: "GET", path: "/connectors/phobs/mock/property-amenities", desc: "Get property amenities" },
+          { method: "GET", path: "/connectors/phobs/mock/units/{property}", desc: "Get units for property" },
+          { method: "GET", path: "/connectors/phobs/mock/rate-plans/{property}/years/{year}", desc: "Get rate plans for property/year" },
+          { method: "GET", path: "/connectors/phobs/mock/packages/{property}/years/{year}", desc: "Get packages for property/year" },
+          { method: "GET", path: "/connectors/phobs/mock/properties/details/{property}", desc: "Get property description" },
+          { method: "GET", path: "/connectors/phobs/mock/units/details/{unitId}", desc: "Get unit description" },
+          { method: "GET", path: "/connectors/phobs/mock/rate-plans/details/{unitId}", desc: "Get rate plan description" },
+          { method: "GET", path: "/connectors/phobs/mock/packages/details/{unitId}", desc: "Get package description" },
+          { method: "GET", path: "/connectors/phobs/mock/calendar/availability/{property}", desc: "Get availability calendar" },
+          { method: "GET", path: "/connectors/phobs/mock/properties/{property}/availability", desc: "Get property availability" },
+          { method: "POST", path: "/connectors/phobs/mock/properties/availability", desc: "Get availability from user request" },
+          { method: "POST", path: "/connectors/phobs/mock/properties/quote", desc: "Get price quote" },
+          { method: "POST", path: "/connectors/phobs/mock/properties/additional-services", desc: "Get quote and services" }
+        ]
+      }
+    ]
+  },
+  {
+    project: "interactiveq \u2014 Microservices",
+    icon: "\uD83D\uDD27",
+    components: [
+      {
+        name: "apex-callcenter \u2013 Ping",
+        endpoints: [
+          { method: "GET", path: "/ping", desc: "Health check \u2013 returns 'pong'" }
+        ]
+      },
+      {
+        name: "flux-etl \u2013 Incert Facade",
+        endpoints: [
+          { method: "GET", path: "/internal/incert/redeem/status/{code}", desc: "Get redeem status by code" },
+          { method: "GET", path: "/internal/incert/redeem/status/detail/{code}", desc: "Get redeem status details by code" },
+          { method: "POST", path: "/internal/incert/redeem", desc: "Process redeem request" },
+          { method: "POST", path: "/internal/incert/redeem/cancel", desc: "Cancel a redeem request" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Admin Approvals",
+        endpoints: [
+          { method: "GET", path: "/admin/approvals", desc: "List approval requests with RSQL filtering and pagination" },
+          { method: "POST", path: "/admin/approvals", desc: "Create approval request for booking" },
+          { method: "POST", path: "/admin/approvals/{id}/approve", desc: "Approve an approval request" },
+          { method: "POST", path: "/admin/approvals/{id}/reject", desc: "Reject an approval request" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Admin Bookings",
+        endpoints: [
+          { method: "GET", path: "/admin/bookings", desc: "List bookings (tenant-wide) with RSQL filtering and pagination" },
+          { method: "GET", path: "/admin/bookings/{id}", desc: "Get booking by ID" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Admin Experiences",
+        endpoints: [
+          { method: "GET", path: "/admin/experiences", desc: "List experiences with active filter and RSQL filtering" },
+          { method: "POST", path: "/admin/experiences", desc: "Create experience" },
+          { method: "PUT", path: "/admin/experiences/{id}", desc: "Update experience" },
+          { method: "POST", path: "/admin/experiences/{id}/active", desc: "Enable/disable experience" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Admin Policies",
+        endpoints: [
+          { method: "GET", path: "/admin/policies", desc: "List policies with RSQL filtering" },
+          { method: "POST", path: "/admin/policies", desc: "Create policy" },
+          { method: "PUT", path: "/admin/policies/{id}", desc: "Update policy" },
+          { method: "POST", path: "/admin/policies/{id}/active", desc: "Enable/disable policy" },
+          { method: "POST", path: "/admin/policies/validate", desc: "Validate policy DSL without persisting" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Admin Reporting",
+        endpoints: [
+          { method: "GET", path: "/admin/reporting", desc: "List reporting facts with RSQL filtering" },
+          { method: "POST", path: "/admin/reporting", desc: "Create reporting fact" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Agent",
+        endpoints: [
+          { method: "GET", path: "/agent/default-benefit", desc: "Get default benefit suggestion (stub)" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 API Keys (Deprecated)",
+        endpoints: [
+          { method: "POST", path: "/api/v1/tenants/{tenantId}/api-keys", desc: "Create API key (DEPRECATED \u2013 410)" },
+          { method: "GET", path: "/api/v1/tenants/{tenantId}/api-keys", desc: "Get all API keys (DEPRECATED \u2013 410)" },
+          { method: "GET", path: "/api/v1/tenants/{tenantId}/api-keys/{apiKeyId}", desc: "Get API key by ID (DEPRECATED \u2013 410)" },
+          { method: "PUT", path: "/api/v1/tenants/{tenantId}/api-keys/{apiKeyId}", desc: "Update API key (DEPRECATED \u2013 410)" },
+          { method: "DELETE", path: "/api/v1/tenants/{tenantId}/api-keys/{apiKeyId}", desc: "Delete API key (DEPRECATED \u2013 410)" },
+          { method: "POST", path: "/api/v1/tenants/{tenantId}/api-keys/{apiKeyId}/regenerate", desc: "Regenerate API key secret (DEPRECATED \u2013 410)" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Examples",
+        endpoints: [
+          { method: "GET", path: "/api/v1/examples/api-key/read-only", desc: "Read-only endpoint (requires READ_USERS)" },
+          { method: "POST", path: "/api/v1/examples/api-key/write", desc: "Write endpoint (requires WRITE_USERS)" },
+          { method: "GET", path: "/api/v1/examples/api-key/admin", desc: "Admin endpoint (requires ADMIN_USERS)" },
+          { method: "GET", path: "/api/v1/examples/api-key/multiple-scopes", desc: "Multiple scopes endpoint" },
+          { method: "GET", path: "/api/v1/examples/api-key/all-scopes", desc: "All scopes endpoint" },
+          { method: "GET", path: "/api/v1/examples/api-key/system", desc: "System endpoint (requires SYSTEM_READ)" },
+          { method: "GET", path: "/api/v1/examples/api-key/public", desc: "Public endpoint (no scope required)" },
+          { method: "GET", path: "/api/v1/examples/success", desc: "Successful response example" },
+          { method: "GET", path: "/api/v1/examples/error/{type}", desc: "Error response examples" },
+          { method: "POST", path: "/api/v1/examples/validate", desc: "Validation example with request body" },
+          { method: "GET", path: "/api/v1/examples/business-logic", desc: "Business logic error example" },
+          { method: "GET", path: "/api/v1/examples/external-service", desc: "External service error example" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Health & Tenant",
+        endpoints: [
+          { method: "GET", path: "/api/health", desc: "Health check with status, app name, version" },
+          { method: "GET", path: "/api/info", desc: "Application info endpoint" },
+          { method: "GET", path: "/api/tenant/current", desc: "Get current tenant information" },
+          { method: "GET", path: "/api/tenant/context", desc: "Get current user context" },
+          { method: "GET", path: "/api/tenant/validate", desc: "Validate tenant access" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Member Bookings",
+        endpoints: [
+          { method: "POST", path: "/member/bookings", desc: "Create a booking" },
+          { method: "GET", path: "/member/bookings", desc: "List current member's bookings" },
+          { method: "GET", path: "/member/bookings/{id}", desc: "Get booking by ID" }
+        ]
+      },
+      {
+        name: "loki-experiencetool \u2013 Member Experiences",
+        endpoints: [
+          { method: "GET", path: "/member/experiences", desc: "Browse active experiences with RSQL filtering" }
+        ]
+      },
+      {
+        name: "nova-memberarea \u2013 Ping",
+        endpoints: [
+          { method: "GET", path: "/ping", desc: "Health check \u2013 returns 'pong'" }
+        ]
+      },
+      {
+        name: "odin-config \u2013 API Keys",
+        endpoints: [
+          { method: "POST", path: "/tenants/{tenantId}/api-keys/issue", desc: "Issue new API key with scopes and expiration" }
+        ]
+      }
+    ]
+  },
+  {
+    project: "interactiveq-dashboard \u2014 Frontend API Calls",
+    icon: "\uD83D\uDDA5\uFE0F",
+    components: [
+      {
+        name: "Reservation Service",
+        endpoints: [
+          { method: "POST", path: "/reservationOffer", desc: "Submit reservation offer request" },
+          { method: "POST", path: "/offerRequestWidget", desc: "Submit offer from widget" },
+          { method: "POST", path: "/reservationOffer/template", desc: "Submit reservation offer from template" }
+        ]
+      },
+      {
+        name: "User Service",
+        endpoints: [
+          { method: "POST", path: "/users", desc: "Create new user" },
+          { method: "PUT", path: "/users/", desc: "Update user" },
+          { method: "DELETE", path: "/users/{username}", desc: "Delete user by username" },
+          { method: "GET", path: "/local-users?page=0&size=1000", desc: "Get all local users (HATEOAS)" },
+          { method: "GET", path: "/local-users/search/findByUsername?username={username}", desc: "Find user by username" }
+        ]
+      },
+      {
+        name: "Hotel Service",
+        endpoints: [
+          { method: "GET", path: "/enabledhotels", desc: "Get enabled hotels" },
+          { method: "GET", path: "/hotels", desc: "Get all hotels" },
+          { method: "GET", path: "/hotels/{id}", desc: "Get hotel by ID" },
+          { method: "PATCH", path: "/hotels/{id}", desc: "Update hotel" },
+          { method: "GET", path: "/hotels/p/hotel-by-name/{name}", desc: "Get hotel by name (public)" },
+          { method: "GET", path: "/hotels/p/{hotelId}/related", desc: "Get related hotels (public)" },
+          { method: "GET", path: "/hotels/p", desc: "Get all public hotels" }
+        ]
+      },
+      {
+        name: "Property Upload Service",
+        endpoints: [
+          { method: "POST", path: "/hotels/{hotelId}/uploadImage", desc: "Upload hotel image" },
+          { method: "POST", path: "/hotels/{hotelId}/uploadImageFromUrl", desc: "Upload hotel image from URL" }
+        ]
+      },
+      {
+        name: "Discount Code Service",
+        endpoints: [
+          { method: "GET", path: "/discount-codes", desc: "Get discount codes (HATEOAS paginated)" },
+          { method: "POST", path: "/discount-codes", desc: "Create discount code" },
+          { method: "PATCH", path: "/discount-codes/{id}", desc: "Update discount code" },
+          { method: "DELETE", path: "/discount-codes/{id}", desc: "Delete discount code" }
+        ]
+      },
+      {
+        name: "External Code Mapping Service",
+        endpoints: [
+          { method: "GET", path: "/external-code-mappings", desc: "Get external code mappings (HATEOAS)" },
+          { method: "POST", path: "/external-code-mappings", desc: "Create external code mapping" },
+          { method: "PATCH", path: "/external-code-mappings/{id}", desc: "Update external code mapping" },
+          { method: "DELETE", path: "/external-code-mappings/{id}", desc: "Delete external code mapping" },
+          { method: "GET", path: "/external-code-mappings/search/findByHotelAndCode", desc: "Search by hotel and code" }
+        ]
+      },
+      {
+        name: "External Code Rule Service",
+        endpoints: [
+          { method: "GET", path: "/external-code-rules", desc: "Get external code rules (HATEOAS)" },
+          { method: "POST", path: "/external-code-rules", desc: "Create external code rule" },
+          { method: "PATCH", path: "/external-code-rules/{id}", desc: "Update external code rule" },
+          { method: "DELETE", path: "/external-code-rules/{id}", desc: "Delete external code rule" },
+          { method: "GET", path: "/external-code-rules/search/findByExternalCodeMapping", desc: "Search rules by mapping" }
+        ]
+      },
+      {
+        name: "Taxonomy Service",
+        endpoints: [
+          { method: "GET", path: "/tags?page={page}&size={size}&sort={sort}", desc: "Get tags paginated" },
+          { method: "GET", path: "/tags/{id}", desc: "Get tag by ID" },
+          { method: "POST", path: "/tags", desc: "Create tag" },
+          { method: "PUT", path: "/tags/{id}", desc: "Update tag" },
+          { method: "DELETE", path: "/tags/{id}", desc: "Delete tag" },
+          { method: "GET", path: "/tags/search/findByName?name={name}", desc: "Search tag by name" },
+          { method: "GET", path: "/tags/{id}/hotels", desc: "Get hotels for tag" }
+        ]
+      },
+      {
+        name: "Custom IBE Call Service",
+        endpoints: [
+          { method: "POST", path: "/customReservation/ibecall", desc: "Custom IBE call" },
+          { method: "POST", path: "/availableRoomTypes/offline", desc: "Get available room types offline" },
+          { method: "POST", path: "/availableRoomTypes", desc: "Get available room types" }
+        ]
+      },
+      {
+        name: "Payment Management Service",
+        endpoints: [
+          { method: "POST", path: "/payment-configurations/{hotelId}", desc: "Update payment configuration" },
+          { method: "PUT", path: "/hotelInfoes/{hotelId}/currencies", desc: "Update hotel currencies" },
+          { method: "POST", path: "/property-currencies", desc: "Create property currency" },
+          { method: "PUT", path: "/property-currencies/{currencyId}", desc: "Update property currency" },
+          { method: "DELETE", path: "/hotelInfoes/{hotelId}/currencies/{currencyCode}", desc: "Delete hotel currency" }
+        ]
+      },
+      {
+        name: "CMS Greetings Service",
+        endpoints: [
+          { method: "POST", path: "/genders", desc: "Create gender" },
+          { method: "PATCH", path: "/genders/{genderId}", desc: "Update gender" },
+          { method: "DELETE", path: "/genders/{genderId}", desc: "Delete gender" },
+          { method: "POST", path: "/salutations", desc: "Create salutation" },
+          { method: "PATCH", path: "/salutations/{titleId}", desc: "Update salutation" },
+          { method: "DELETE", path: "/salutations/{titleId}", desc: "Delete salutation" },
+          { method: "POST", path: "/greetings", desc: "Create greeting" },
+          { method: "PATCH", path: "/greetings/{greetingId}", desc: "Update greeting" },
+          { method: "DELETE", path: "/greetings/{greetingId}", desc: "Delete greeting" },
+          { method: "GET", path: "/genders/search/findAllByLanguage/?language={languageId}", desc: "Find genders by language" },
+          { method: "GET", path: "/genders/{genderId}/titles", desc: "Get titles for gender" },
+          { method: "GET", path: "/salutations/{titleId}/greetings", desc: "Get greetings for salutation" }
+        ]
+      }
+    ]
+  }
+];
+
+function highlightParams(path) {
+  return path.replace(/\{([^}]+)\}/g, '<span class="param">{$1}</span>');
+}
+
+function renderAll(filter, search) {
+  const container = document.getElementById('content');
+  const noResults = document.getElementById('noResults');
+  let html = '';
+  let totalEndpoints = 0;
+  let totalComponents = 0;
+  let visibleEndpoints = 0;
+
+  DATA.forEach(proj => {
+    let projHtml = '';
+    let projCount = 0;
+
+    proj.components.forEach(comp => {
+      totalComponents++;
+      let compHtml = '';
+      let compCount = 0;
+
+      comp.endpoints.forEach(ep => {
+        totalEndpoints++;
+        const methodLower = ep.method.toLowerCase();
+        const matchesFilter = filter === 'all' || methodLower === filter;
+        const matchesSearch = !search ||
+          ep.path.toLowerCase().includes(search) ||
+          ep.method.toLowerCase().includes(search) ||
+          ep.desc.toLowerCase().includes(search) ||
+          comp.name.toLowerCase().includes(search);
+
+        if (matchesFilter && matchesSearch) {
+          compCount++;
+          visibleEndpoints++;
+          compHtml += `<div class="endpoint">
+            <span class="method ${methodLower}">${ep.method}</span>
+            <span class="path">${highlightParams(ep.path)}</span>
+            <span class="desc">${ep.desc}</span>
+          </div>`;
+        }
+      });
+
+      if (compCount > 0) {
+        projCount += compCount;
+        const compId = (proj.project + comp.name).replace(/[^a-zA-Z0-9]/g, '');
+        projHtml += `<div class="component">
+          <div class="component-header open" onclick="toggleComponent('${compId}')">
+            <h3>${comp.name} <span class="count">${compCount}</span></h3>
+            <span class="arrow">\u25B6</span>
+          </div>
+          <div class="endpoints show" id="comp-${compId}">${compHtml}</div>
+        </div>`;
+      }
+    });
+
+    if (projCount > 0) {
+      const projId = proj.project.replace(/[^a-zA-Z0-9]/g, '');
+      html += `<div class="project-section">
+        <div class="project-header" onclick="toggleProject('${projId}')">
+          <h2><span class="project-icon">${proj.icon}</span>${proj.project} <span class="badge">${projCount} endpoints</span></h2>
+          <span class="chevron">\u25BC</span>
+        </div>
+        <div id="proj-${projId}">${projHtml}</div>
+      </div>`;
+    }
+  });
+
+  container.innerHTML = html;
+  noResults.classList.toggle('hidden', visibleEndpoints > 0);
+
+  if (!filter || filter === 'all') {
+    document.getElementById('totalEndpoints').textContent = totalEndpoints;
+    document.getElementById('totalComponents').textContent = totalComponents;
+  }
+}
+
+function toggleComponent(id) {
+  const el = document.getElementById('comp-' + id);
+  const header = el.previousElementSibling;
+  el.classList.toggle('show');
+  header.classList.toggle('open');
+}
+
+function toggleProject(id) {
+  const el = document.getElementById('proj-' + id);
+  const header = el.previousElementSibling;
+  if (el.style.display === 'none') {
+    el.style.display = '';
+    header.classList.remove('collapsed');
+  } else {
+    el.style.display = 'none';
+    header.classList.add('collapsed');
+  }
+}
+
+let currentFilter = 'all';
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderAll(currentFilter, document.getElementById('search').value.toLowerCase().trim());
+  });
+});
+
+let debounce;
+document.getElementById('search').addEventListener('input', e => {
+  clearTimeout(debounce);
+  debounce = setTimeout(() => {
+    renderAll(currentFilter, e.target.value.toLowerCase().trim());
+  }, 200);
+});
+
+renderAll('all', '');
+</script>
+</body>
+</html>
