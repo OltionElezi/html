@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InteractiveQ Docs — API Reference</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0d1117;color:#c9d1d9;display:flex;min-height:100vh}
+  a{color:#58a6ff;text-decoration:none}a:hover{text-decoration:underline}
+  nav{width:260px;min-height:100vh;background:#161b22;border-right:1px solid #30363d;position:fixed;top:0;left:0;overflow-y:auto;padding:0 0 40px}
+  .nav-logo{padding:20px 20px 16px;border-bottom:1px solid #30363d;margin-bottom:8px}
+  .nav-logo h2{color:#f0f6fc;font-size:15px;font-weight:700}
+  .nav-logo p{color:#8b949e;font-size:11px;margin-top:3px}
+  nav ul{list-style:none;padding:0 8px}
+  nav ul li a{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;color:#8b949e;font-size:13px;transition:all .15s}
+  nav ul li a:hover,nav ul li a.active{background:#1f2937;color:#f0f6fc;text-decoration:none}
+  nav ul li a.active{color:#58a6ff;background:#1a2332}
+  .nav-section{padding:16px 20px 6px;font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.8px}
+  main{margin-left:260px;flex:1;padding:40px 48px;max-width:1050px}
+  h1{font-size:28px;font-weight:700;color:#f0f6fc;margin-bottom:8px}
+  h2{font-size:22px;font-weight:600;color:#f0f6fc;margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid #30363d}
+  h3{font-size:15px;font-weight:600;color:#e6edf3;margin:24px 0 10px}
+  p{color:#8b949e;line-height:1.7;margin-bottom:12px;font-size:14px}
+  .breadcrumb{font-size:12px;color:#8b949e;margin-bottom:28px}
+  .breadcrumb span{color:#30363d;margin:0 6px}
+  /* Method badges */
+  .method{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:monospace;letter-spacing:.5px;min-width:48px;text-align:center}
+  .GET{background:#1a3a2a;color:#3fb950;border:1px solid #1e4a30}
+  .POST{background:#1a2d4a;color:#58a6ff;border:1px solid #1d3a5e}
+  .PUT{background:#2d2000;color:#d29922;border:1px solid #3d2800}
+  .PATCH{background:#2d1a00;color:#f0883e;border:1px solid #3d2200}
+  .DELETE{background:#3a1a1a;color:#f85149;border:1px solid #5e2020}
+  /* Auth badges */
+  .auth-public{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:#1a3a2a;color:#3fb950;border:1px solid #1e4a30}
+  .auth-jwt{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:#1a2d4a;color:#58a6ff;border:1px solid #1d3a5e}
+  .auth-admin{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:#3a1a1a;color:#f85149;border:1px solid #5e2020}
+  .auth-apikey{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;background:#3a2000;color:#f0883e;border:1px solid #4a2800}
+  /* Endpoint table */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px}
+  th{background:#161b22;color:#8b949e;font-weight:600;text-align:left;padding:10px 14px;border-bottom:1px solid #30363d;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+  td{padding:10px 14px;border-bottom:1px solid #21262d;color:#c9d1d9;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#161b22}
+  .path{font-family:monospace;font-size:12px;color:#e6edf3}
+  .desc{font-size:12px;color:#8b949e}
+  .code-block{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;margin:12px 0;overflow-x:auto}
+  .code-block pre{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px;line-height:1.7;color:#e6edf3}
+  .c{color:#8b949e}.s{color:#a5d6ff}.k{color:#ff7b72}.n{color:#ffa657}.v{color:#79c0ff}
+  code{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px;background:#161b22;padding:1px 5px;border-radius:4px;color:#a5d6ff}
+  .info-box{background:#0d1b2a;border:1px solid #1d3a5e;border-radius:8px;padding:16px 20px;margin:16px 0}
+  .info-box h4{color:#58a6ff;font-size:13px;font-weight:600;margin-bottom:8px}
+  .info-box p{font-size:13px;color:#8b949e;margin:0;line-height:1.6}
+  /* Section heading with pill */
+  .section-header{display:flex;align-items:center;gap:12px;margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid #30363d}
+  .section-header h2{margin:0;border:none;padding:0}
+  .controller-pill{background:#161b22;border:1px solid #30363d;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:#8b949e;font-family:monospace}
+  /* Legend */
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 28px;padding:14px 16px;background:#161b22;border-radius:8px;border:1px solid #30363d}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#8b949e}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid #21262d;color:#8b949e;font-size:12px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">
+    <h2>InteractiveQ Docs</h2>
+    <p>Gustaffo Booking Platform</p>
+  </div>
+  <div class="nav-section">Navigation</div>
+  <ul>
+    <li><a href="index.html">&#127968; Overview</a></li>
+    <li><a href="backend.html">&#9096; Backend (Spring Boot)</a></li>
+    <li><a href="frontend.html">&#9655; Frontend (Angular)</a></li>
+    <li><a href="auth-flow.html">&#128274; Auth &amp; Security</a></li>
+    <li><a href="api-reference.html" class="active">&#128196; API Reference</a></li>
+  </ul>
+  <div class="nav-section" style="margin-top:20px">Sections</div>
+  <ul>
+    <li><a href="#base-urls">Base URLs</a></li>
+    <li><a href="#controllers">REST Controllers</a></li>
+    <li><a href="#hateoas">HATEOAS Endpoints</a></li>
+    <li><a href="#public">Public Endpoints</a></li>
+    <li><a href="#protected">Protected Endpoints</a></li>
+    <li><a href="#admin">Admin-Only (/ops*)</a></li>
+    <li><a href="#formats">Request Formats</a></li>
+    <li><a href="#swagger">Swagger UI</a></li>
+  </ul>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">InteractiveQ Docs</a> <span>›</span> API Reference</div>
+  <h1>&#128196; API Reference</h1>
+  <p>REST API documentation for the InteractiveQ Spring Boot backend. Base URL varies by environment. All protected endpoints require a valid JWT or API key.</p>
+
+  <div class="legend">
+    <div class="legend-item"><span class="auth-public">&#128275; public</span> No authentication required</div>
+    <div class="legend-item"><span class="auth-jwt">&#128274; JWT</span> Requires Cognito Bearer token</div>
+    <div class="legend-item"><span class="auth-admin">&#128274; admin</span> Requires ROLE_admin</div>
+    <div class="legend-item"><span class="auth-apikey">&#128273; API key</span> Accepts API key auth</div>
+    <div class="legend-item"><span class="GET">GET</span> <span class="POST">POST</span> <span class="PUT">PUT</span> <span class="PATCH">PATCH</span> <span class="DELETE">DELETE</span> HTTP methods</div>
+  </div>
+
+  <h2 id="base-urls">&#127758; Base URLs</h2>
+  <table>
+    <thead><tr><th>Environment</th><th>Base URL</th></tr></thead>
+    <tbody>
+      <tr><td>Development</td><td><code>http://localhost:8080/</code></td></tr>
+      <tr><td>Production</td><td><code>https://booking.gustaffo.com/</code></td></tr>
+      <tr><td>Production (Preview)</td><td><code>https://interactiveq-prod-next.apps.gustaffo.com/</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <h4>&#9432; Live Swagger UI</h4>
+    <p>The API has full OpenAPI documentation available at <code>{BASE_URL}/swagger.html</code>. The raw OpenAPI JSON is at <code>{BASE_URL}/api-docs</code>. Swagger try-it-out is disabled in production.</p>
+  </div>
+
+  <h2 id="controllers">&#128230; REST Controllers</h2>
+  <p>The application has 4 explicit REST controllers plus a large number of Spring Data REST (HATEOAS) endpoints auto-generated from JPA repositories.</p>
+
+  <table>
+    <thead><tr><th>Controller</th><th>File</th><th>Responsibility</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>ContactController</code></td>
+        <td><code>controller/ContactController.java</code></td>
+        <td>Contact form submissions and management</td>
+      </tr>
+      <tr>
+        <td><code>PaymentSettingsController</code></td>
+        <td><code>controller/PaymentSettingsController.java</code></td>
+        <td>CRUD for payment gateway configurations (Saferpay, etc.)</td>
+      </tr>
+      <tr>
+        <td><code>SaferpayTransactionController</code></td>
+        <td><code>controller/SaferpayTransactionController.java</code></td>
+        <td>Saferpay payment transaction initiation &amp; callbacks</td>
+      </tr>
+      <tr>
+        <td><code>FrontendController</code></td>
+        <td><code>controller/FrontendController.java</code></td>
+        <td>Frontend resource serving (deprecated / legacy)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="hateoas">&#128279; HATEOAS / Spring Data REST Endpoints</h2>
+  <p>Spring Data REST auto-exposes JPA repositories as HAL+JSON REST endpoints. These cover the bulk of the API. All require authentication (JWT or API key) unless listed in the public endpoints.</p>
+
+  <div class="code-block"><pre><span class="c">// Response format: application/hal+json (HATEOAS)</span>
+<span class="c">// Example response shape:</span>
+{
+  <span class="s">"id"</span>: 1,
+  <span class="s">"name"</span>: <span class="s">"Hotel Offer"</span>,
+  <span class="s">"_links"</span>: {
+    <span class="s">"self"</span>:    { <span class="s">"href"</span>: <span class="s">"/offers/1"</span> },
+    <span class="s">"offers"</span>: { <span class="s">"href"</span>: <span class="s">"/offers"</span> }
+  }
+}
+
+<span class="c">// Paginated collection response:</span>
+{
+  <span class="s">"_embedded"</span>: { <span class="s">"offers"</span>: [...] },
+  <span class="s">"_links"</span>: { <span class="s">"self"</span>: {...}, <span class="s">"next"</span>: {...}, <span class="s">"prev"</span>: {...} },
+  <span class="s">"page"</span>: { <span class="s">"size"</span>: 20, <span class="s">"totalElements"</span>: 100, <span class="s">"totalPages"</span>: 5 }
+}</pre></div>
+
+  <h3>Standard HATEOAS CRUD patterns per domain:</h3>
+  <table>
+    <thead><tr><th>Method</th><th>Pattern</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span></td><td class="path">/{resource}</td><td>List all (paginated, sortable, filterable)</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/{resource}/{id}</td><td>Get one by ID</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/{resource}</td><td>Create new</td></tr>
+      <tr><td><span class="PUT">PUT</span></td><td class="path">/{resource}/{id}</td><td>Replace (full update)</td></tr>
+      <tr><td><span class="PATCH">PATCH</span></td><td class="path">/{resource}/{id}</td><td>Partial update</td></tr>
+      <tr><td><span class="DELETE">DELETE</span></td><td class="path">/{resource}/{id}</td><td>Delete</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/{resource}/search/findBy*</td><td>Custom search methods</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="public">&#128275; Public Endpoints (No Auth Required)</h2>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="POST">POST</span></td>
+        <td class="path">/bookOffer</td>
+        <td class="desc">Submit a booking offer request. Called from public booking widget.</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span> <span class="POST">POST</span></td>
+        <td class="path">/bookOffer/**</td>
+        <td class="desc">Booking offer multi-step flow endpoints</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span> <span class="POST">POST</span></td>
+        <td class="path">/offerRequest*</td>
+        <td class="desc">Offer request form submission</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/offerRequestWidget/**</td>
+        <td class="desc">Embeddable offer request widget data</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/showOfferRequest/**</td>
+        <td class="desc">Display offer request details</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/emailTemplate/**</td>
+        <td class="desc">Render email templates for viewing in browser</td>
+      </tr>
+      <tr>
+        <td><span class="POST">POST</span></td>
+        <td class="path">/captcha/**</td>
+        <td class="desc">CAPTCHA validation endpoint</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span> <span class="POST">POST</span></td>
+        <td class="path">/payments/**</td>
+        <td class="desc">Payment initiation, status, and gateway callbacks (Saferpay)</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span> <span class="POST">POST</span></td>
+        <td class="path">/payments/initiation/**</td>
+        <td class="desc">Payment initiation flow</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span> <span class="POST">POST</span></td>
+        <td class="path">/payments/cb/**</td>
+        <td class="desc">Payment callback (redirect from Saferpay)</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/hotels/p/**</td>
+        <td class="desc">Public hotel data endpoints</td>
+      </tr>
+      <tr>
+        <td><span class="POST">POST</span></td>
+        <td class="path">/notifications/**</td>
+        <td class="desc">Notification webhook receivers</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span> <span class="POST">POST</span></td>
+        <td class="path">/confirmations/newsletter/**</td>
+        <td class="desc">Newsletter subscription opt-in / double opt-in confirmation</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/p/cms/templates/**</td>
+        <td class="desc">Public CMS email template rendering</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/landing/**</td>
+        <td class="desc">Landing page content endpoints</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span> <span class="POST">POST</span></td>
+        <td class="path">/bookCustomizedOffer/**</td>
+        <td class="desc">Customized offer booking flow</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/sse/availableRoomTypes/**</td>
+        <td class="desc">Server-Sent Events stream for real-time room availability</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/cms/qr</td>
+        <td class="desc">QR code generation</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/cms/qr/**</td>
+        <td class="desc">QR code data retrieval</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/asm/tickets/widget</td>
+        <td class="desc">Embeddable ticket widget (Activity &amp; Ticketing System)</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/shareEmailTemplate/**</td>
+        <td class="desc">Shareable email template links</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/markEmailOpening/**</td>
+        <td class="desc">Email open tracking pixel (1x1 image)</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/swagger-ui/**</td>
+        <td class="desc">Swagger UI (OpenAPI interactive docs)</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/v3/api-docs/**</td>
+        <td class="desc">OpenAPI spec JSON/YAML</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/actuator/health</td>
+        <td class="desc">Health check endpoint</td>
+      </tr>
+      <tr>
+        <td><span class="GET">GET</span></td>
+        <td class="path">/actuator/prometheus</td>
+        <td class="desc">Prometheus metrics scrape endpoint</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="protected">&#128274; Protected Endpoints (JWT or API Key Required)</h2>
+  <p>All endpoints not listed in the public section require authentication. Below are key resource paths exposed via Spring Data REST and custom controllers.</p>
+
+  <h3>Offers &amp; Reservations</h3>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span></td><td class="path">/offers</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List all offers (paginated)</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/offers/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Get offer by ID</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/offers</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create new offer</td></tr>
+      <tr><td><span class="PATCH">PATCH</span></td><td class="path">/offers/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Update offer</td></tr>
+      <tr><td><span class="DELETE">DELETE</span></td><td class="path">/offers/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Delete offer</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/reservations</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List reservations</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/confirmations</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List booking confirmations</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Experiences</h3>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span></td><td class="path">/experiences</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List all experiences</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/experiences</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create experience</td></tr>
+      <tr><td><span class="PATCH">PATCH</span></td><td class="path">/experiences/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Update experience</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/experienceBookings</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List experience bookings</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/experienceTemplates</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List experience templates</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/eligibilityPolicies</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List eligibility policies</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Users, Roles &amp; RBAC</h3>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span></td><td class="path">/users</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List users</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/users</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create user (also creates in Cognito)</td></tr>
+      <tr><td><span class="PATCH">PATCH</span></td><td class="path">/users/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Update user</td></tr>
+      <tr><td><span class="DELETE">DELETE</span></td><td class="path">/users/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Delete user</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/roles</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List roles</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/features</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List available feature flags</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/entities</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List hotel entities (multi-tenant)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>CMS / Content</h3>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span></td><td class="path">/cms/templates</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List email templates</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/cms/templates</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create template</td></tr>
+      <tr><td><span class="PATCH">PATCH</span></td><td class="path">/cms/templates/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Update template</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/hotels</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List hotel properties</td></tr>
+      <tr><td><span class="PATCH">PATCH</span></td><td class="path">/hotels/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Update hotel property</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/seasons</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List seasons</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/greetings</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List CMS greetings/salutations</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/taxonomy</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List taxonomy tags/categories</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Payments</h3>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span></td><td class="path">/paymentConfigurations</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List payment gateway configs</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/paymentConfigurations</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create payment config</td></tr>
+      <tr><td><span class="PATCH">PATCH</span></td><td class="path">/paymentConfigurations/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Update payment config</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/paymentLinks</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List manual payment links</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/paymentLinks</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create manual payment link</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Tickets (ASM)</h3>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span></td><td class="path">/asm/tickets</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List ASM tickets</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/asm/tickets</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create ticket</td></tr>
+      <tr><td><span class="PATCH">PATCH</span></td><td class="path">/asm/tickets/{id}</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Update ticket</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Discount Codes &amp; Rate Codes</h3>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span></td><td class="path">/discountCodes</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List discount codes (validity: 8 weeks)</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/discountCodes</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create discount code</td></tr>
+      <tr><td><span class="GET">GET</span></td><td class="path">/externalCodeMappings</td><td><span class="auth-jwt">JWT</span></td><td class="desc">List external rate code mappings</td></tr>
+      <tr><td><span class="POST">POST</span></td><td class="path">/externalCodeMappings</td><td><span class="auth-jwt">JWT</span></td><td class="desc">Create rate code mapping</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="admin">&#128274; Admin-Only Endpoints (<code>/ops*</code>)</h2>
+  <p>Requires <code>ROLE_admin</code> — accessible via JWT with admin group, API key with admin role, or Basic Auth (ops user).</p>
+  <table>
+    <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><span class="GET">GET</span> <span class="POST">POST</span></td><td class="path">/ops*</td><td><span class="auth-admin">admin</span></td><td class="desc">Operations management endpoints</td></tr>
+      <tr><td><span class="GET">GET</span> <span class="POST">POST</span></td><td class="path">/ops/**</td><td><span class="auth-admin">admin</span></td><td class="desc">Operations sub-endpoints</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="formats">&#128221; Request &amp; Response Formats</h2>
+
+  <h3>Authentication Header</h3>
+  <div class="code-block"><pre><span class="c">// JWT Authentication (primary method)</span>
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ii...
+
+<span class="c">// API Key Authentication</span>
+<span class="c">// Header name is configurable — key value from application.yml</span>
+X-API-Key: Gustaffo_s8MPoyXljoWqo8wPQFNcB15vK...</pre></div>
+
+  <h3>Standard Request Headers</h3>
+  <div class="code-block"><pre>Content-Type: application/json
+Accept: application/hal+json        <span class="c"># for HATEOAS endpoints</span>
+Accept: application/json            <span class="c"># for regular JSON endpoints</span></pre></div>
+
+  <h3>Pagination Query Parameters</h3>
+  <div class="code-block"><pre><span class="c"># Spring Data REST supports these query params:</span>
+GET /offers?page=0&amp;size=20&amp;sort=createdAt,desc
+
+<span class="c"># Response includes pagination metadata:</span>
+{
+  <span class="s">"_embedded"</span>: { <span class="s">"offers"</span>: [...] },
+  <span class="s">"page"</span>: {
+    <span class="s">"size"</span>: 20,
+    <span class="s">"totalElements"</span>: 150,
+    <span class="s">"totalPages"</span>: 8,
+    <span class="s">"number"</span>: 0
+  }
+}</pre></div>
+
+  <h3>Error Responses</h3>
+  <div class="code-block"><pre><span class="c">// 401 Unauthorized — no/invalid token</span>
+HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="InteractiveQ"
+
+<span class="c">// 403 Forbidden — authenticated but insufficient role</span>
+HTTP/1.1 403 Forbidden
+
+<span class="c">// 404 Not Found — resource does not exist</span>
+HTTP/1.1 404 Not Found
+
+<span class="c">// 400 Bad Request — validation error</span>
+HTTP/1.1 400 Bad Request
+{
+  "errors": [{ "field": "email", "message": "must not be blank" }]
+}</pre></div>
+
+  <h2 id="swagger">&#128196; Swagger / OpenAPI</h2>
+  <table>
+    <tbody>
+      <tr><td style="width:200px;color:#8b949e;font-size:12px">Swagger UI</td><td><code>http://localhost:8080/swagger.html</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">OpenAPI JSON</td><td><code>http://localhost:8080/api-docs</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">OpenAPI YAML</td><td><code>http://localhost:8080/v3/api-docs.yaml</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Try-it-out</td><td>Disabled in production</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Auth required</td><td>No — Swagger endpoints are public</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Paths matched</td><td><code>/**</code> (all paths)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <h4>&#9432; Note on HATEOAS discovery</h4>
+    <p>Spring Data REST exposes a discovery endpoint at <code>GET /</code> (root) when authenticated. This returns all available resource links in HAL format, making the API self-documenting. The Angular frontend uses <code>NgxHateoasClient</code> to consume these HAL+JSON responses and automatically follow <code>_links</code>.</p>
+  </div>
+
+  <footer>
+    <p>InteractiveQ / Gustaffo Booking Platform &mdash; API Reference. For auth details see <a href="auth-flow.html">Auth &amp; Security</a>.</p>
+  </footer>
+</main>
+</body>
+</html>

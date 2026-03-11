@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InteractiveQ Docs — Frontend</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0d1117;color:#c9d1d9;display:flex;min-height:100vh}
+  a{color:#58a6ff;text-decoration:none}a:hover{text-decoration:underline}
+  nav{width:260px;min-height:100vh;background:#161b22;border-right:1px solid #30363d;position:fixed;top:0;left:0;overflow-y:auto;padding:0 0 40px}
+  .nav-logo{padding:20px 20px 16px;border-bottom:1px solid #30363d;margin-bottom:8px}
+  .nav-logo h2{color:#f0f6fc;font-size:15px;font-weight:700}
+  .nav-logo p{color:#8b949e;font-size:11px;margin-top:3px}
+  nav ul{list-style:none;padding:0 8px}
+  nav ul li a{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;color:#8b949e;font-size:13px;transition:all .15s}
+  nav ul li a:hover,nav ul li a.active{background:#1f2937;color:#f0f6fc;text-decoration:none}
+  nav ul li a.active{color:#58a6ff;background:#1a2332}
+  .nav-section{padding:16px 20px 6px;font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.8px}
+  main{margin-left:260px;flex:1;padding:40px 48px;max-width:1000px}
+  h1{font-size:28px;font-weight:700;color:#f0f6fc;margin-bottom:8px}
+  h2{font-size:22px;font-weight:600;color:#f0f6fc;margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid #30363d}
+  h3{font-size:15px;font-weight:600;color:#e6edf3;margin:24px 0 10px}
+  p{color:#8b949e;line-height:1.7;margin-bottom:12px;font-size:14px}
+  .breadcrumb{font-size:12px;color:#8b949e;margin-bottom:28px}
+  .breadcrumb span{color:#30363d;margin:0 6px}
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+  .badge-blue{background:#1a2d4a;color:#58a6ff;border:1px solid #1d3a5e}
+  .badge-green{background:#1a3a2a;color:#3fb950;border:1px solid #1e4a30}
+  .badge-orange{background:#3a2000;color:#f0883e;border:1px solid #4a2800}
+  .badge-purple{background:#2d1a4a;color:#bc8cff;border:1px solid #3d1f5e}
+  .badge-red{background:#3a1a1a;color:#f85149;border:1px solid #5e2020}
+  .badge-yellow{background:#2d2000;color:#d29922;border:1px solid #3d2800}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px}
+  th{background:#161b22;color:#8b949e;font-weight:600;text-align:left;padding:10px 14px;border-bottom:1px solid #30363d;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+  td{padding:10px 14px;border-bottom:1px solid #21262d;color:#c9d1d9;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#161b22}
+  .code-block{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;margin:12px 0;overflow-x:auto}
+  .code-block pre{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px;line-height:1.7;color:#e6edf3}
+  .c{color:#8b949e}.s{color:#a5d6ff}.k{color:#ff7b72}.n{color:#ffa657}.v{color:#79c0ff}
+  .info-box{background:#0d1b2a;border:1px solid #1d3a5e;border-radius:8px;padding:16px 20px;margin:16px 0}
+  .info-box h4{color:#58a6ff;font-size:13px;font-weight:600;margin-bottom:8px}
+  .info-box p{font-size:13px;color:#8b949e;margin:0}
+  code{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px;background:#161b22;padding:1px 5px;border-radius:4px;color:#a5d6ff}
+  /* Route table */
+  .route-path{font-family:monospace;font-size:12px;color:#a5d6ff}
+  .route-public{color:#3fb950;font-size:11px;font-weight:600}
+  .route-admin{color:#f85149;font-size:11px;font-weight:600}
+  .route-res{color:#d29922;font-size:11px;font-weight:600}
+  .route-cms{color:#bc8cff;font-size:11px;font-weight:600}
+  /* Interceptor cards */
+  .interceptor-list{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+  .interceptor{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px}
+  .interceptor .name{color:#f0f6fc;font-size:14px;font-weight:600;font-family:monospace;margin-bottom:6px}
+  .interceptor .desc{color:#8b949e;font-size:13px;line-height:1.5}
+  .interceptor .order{color:#d29922;font-size:11px;margin-bottom:8px}
+  /* Tree */
+  .tree{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:20px;font-family:monospace;font-size:12px;line-height:1.8;color:#c9d1d9;margin:12px 0}
+  .tree .dir{color:#58a6ff}.tree .file{color:#e6edf3}.tree .comment{color:#8b949e}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid #21262d;color:#8b949e;font-size:12px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">
+    <h2>InteractiveQ Docs</h2>
+    <p>Gustaffo Booking Platform</p>
+  </div>
+  <div class="nav-section">Navigation</div>
+  <ul>
+    <li><a href="index.html">&#127968; Overview</a></li>
+    <li><a href="backend.html">&#9096; Backend (Spring Boot)</a></li>
+    <li><a href="frontend.html" class="active">&#9655; Frontend (Angular)</a></li>
+    <li><a href="auth-flow.html">&#128274; Auth &amp; Security</a></li>
+    <li><a href="api-reference.html">&#128196; API Reference</a></li>
+  </ul>
+  <div class="nav-section" style="margin-top:20px">Sections</div>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#structure">Project Structure</a></li>
+    <li><a href="#cognito">Cognito / Amplify</a></li>
+    <li><a href="#interceptors">HTTP Interceptors</a></li>
+    <li><a href="#routing">Routing &amp; Guards</a></li>
+    <li><a href="#components">Components</a></li>
+    <li><a href="#environments">Environments</a></li>
+    <li><a href="#libraries">Libraries</a></li>
+  </ul>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">InteractiveQ Docs</a> <span>›</span> Frontend</div>
+  <h1>&#9655; Frontend — Angular Dashboard</h1>
+  <p>Angular 12 admin dashboard SPA for managing bookings, offers, experiences, content and users. Integrated with AWS Amplify/Cognito for authentication.</p>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px">
+    <span class="badge badge-green">Angular 12.0.5</span>
+    <span class="badge badge-orange">Port 4201</span>
+    <span class="badge badge-purple">AWS Amplify 4.0.3</span>
+    <span class="badge badge-blue">Angular Material</span>
+    <span class="badge badge-blue">TypeScript</span>
+  </div>
+
+  <h2 id="overview">&#128209; Project Overview</h2>
+  <table>
+    <tbody>
+      <tr><td style="width:180px;color:#8b949e;font-size:12px">Project folder</td><td><code>cognitoConfig/interactiveq-dashboard/</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Framework</td><td>Angular 12.0.5</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Language</td><td>TypeScript</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Dev port</td><td><code>4201</code> (via <code>npm start</code>)</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Entry point</td><td><code>src/main.ts</code> → bootstraps <code>AppModule</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Root component</td><td><code>AppComponent</code> with router outlet</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">API format</td><td>HATEOAS <code>application/hal+json</code> via NgxHateoasClient</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">State management</td><td>Akita (RxJS-based)</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Build configs</td><td><code>prod</code>, <code>uat</code>, <code>dev</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="structure">&#128230; Project Structure</h2>
+  <div class="tree">
+    <span class="dir">interactiveq-dashboard/</span><br>
+    ├── <span class="dir">src/</span><br>
+    │   ├── <span class="file">main.ts</span>                    <span class="comment">← Bootstrap entry point</span><br>
+    │   ├── <span class="file">aws-exports.js</span>             <span class="comment">← AWS Amplify / Cognito config</span><br>
+    │   ├── <span class="file">index.html</span>                 <span class="comment">← Root HTML</span><br>
+    │   ├── <span class="file">styles.css</span>                 <span class="comment">← Global styles</span><br>
+    │   ├── <span class="dir">environments/</span><br>
+    │   │   ├── <span class="file">environment.ts</span>           <span class="comment">← Dev config (localhost)</span><br>
+    │   │   ├── <span class="file">environment.prod.ts</span>      <span class="comment">← Production config</span><br>
+    │   │   └── <span class="file">environment.uat.ts</span>       <span class="comment">← UAT config</span><br>
+    │   └── <span class="dir">app/</span><br>
+    │       ├── <span class="file">app.module.ts</span>            <span class="comment">← Main Angular module</span><br>
+    │       ├── <span class="file">app-routing.module.ts</span>    <span class="comment">← All route definitions</span><br>
+    │       ├── <span class="file">app.component.ts/html</span>    <span class="comment">← Root component</span><br>
+    │       ├── <span class="dir">components/</span>              <span class="comment">← All page components (50+)</span><br>
+    │       ├── <span class="dir">service/</span><br>
+    │       │   ├── <span class="file">auth.service.ts</span>          <span class="comment">← Amplify auth wrapper</span><br>
+    │       │   ├── <span class="file">feature.guard.ts</span>         <span class="comment">← Route access guard</span><br>
+    │       │   ├── <span class="file">environment.service.ts</span>   <span class="comment">← Environment state</span><br>
+    │       │   └── <span class="dir">interceptors/</span><br>
+    │       │       ├── <span class="file">auth.interceptor.ts</span>      <span class="comment">← Adds JWT token</span><br>
+    │       │       ├── <span class="file">http-config.interceptor.ts</span><br>
+    │       │       ├── <span class="file">loading.interceptor.ts</span>   <span class="comment">← Loading spinner</span><br>
+    │       │       └── <span class="file">environment.interceptor.ts</span><span class="comment">← API URL swap</span><br>
+    │       ├── <span class="dir">model/</span>                   <span class="comment">← TypeScript interfaces</span><br>
+    │       ├── <span class="dir">pipes/</span>                   <span class="comment">← Custom pipes</span><br>
+    │       └── <span class="dir">directives/</span><br>
+    ├── <span class="file">package.json</span><br>
+    ├── <span class="file">angular.json</span>               <span class="comment">← Build configurations</span><br>
+    └── <span class="dir">amplify/</span>                   <span class="comment">← Amplify backend config</span>
+  </div>
+
+  <h2 id="cognito">&#128274; AWS Amplify / Cognito Configuration</h2>
+  <p>Authentication is handled by <strong>AWS Amplify</strong> connecting to a Cognito User Pool. The <code>aws-exports.js</code> file is auto-generated by Amplify CLI.</p>
+
+  <div class="code-block"><pre><span class="c">// src/aws-exports.js</span>
+<span class="k">const</span> awsmobile = {
+  <span class="s">aws_project_region</span>:           <span class="s">"eu-central-1"</span>,
+  <span class="s">aws_cognito_region</span>:           <span class="s">"eu-central-1"</span>,
+  <span class="s">aws_user_pools_id</span>:            <span class="s">"eu-central-1_uOE1wizZM"</span>,
+  <span class="s">aws_user_pools_web_client_id</span>: <span class="s">"38jhpe7a5shgl0nb467h67pl8m"</span>,
+  <span class="s">aws_cognito_signup_attributes</span>: [<span class="s">"EMAIL"</span>],
+  <span class="s">aws_cognito_mfa_configuration</span>: <span class="s">"OFF"</span>,
+  <span class="s">aws_cognito_verification_mechanisms</span>: [<span class="s">"EMAIL"</span>],
+};</pre></div>
+
+  <table>
+    <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Region</td><td><code>eu-central-1</code></td></tr>
+      <tr><td>User Pool ID</td><td><code>eu-central-1_uOE1wizZM</code></td></tr>
+      <tr><td>Web Client ID</td><td><code>38jhpe7a5shgl0nb467h67pl8m</code></td></tr>
+      <tr><td>Signup attribute</td><td>EMAIL</td></tr>
+      <tr><td>MFA</td><td>OFF</td></tr>
+      <tr><td>Verification</td><td>EMAIL</td></tr>
+      <tr><td>Service</td><td>Cognito — imported existing user pool</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <h4>&#9432; Two separate Cognito User Pools</h4>
+    <p>The <strong>frontend</strong> uses User Pool <code>eu-central-1_uOE1wizZM</code> (Amplify config). The <strong>backend</strong> validates JWTs from User Pool <code>eu-central-1_8Db4kY02L</code>. These are different pools — ensure the JWT issuer matches what the backend expects.</p>
+  </div>
+
+  <h2 id="interceptors">&#128279; HTTP Interceptors</h2>
+  <p>All HTTP requests pass through 4 interceptors in sequence before reaching the backend.</p>
+
+  <div class="interceptor-list">
+    <div class="interceptor">
+      <div class="order">1st interceptor</div>
+      <div class="name">AuthInterceptor</div>
+      <div class="desc">
+        Fetches the current Cognito session from AWS Amplify (<code>Auth.currentSession()</code>) and adds the JWT access token as a <code>Bearer</code> Authorization header to every request.<br><br>
+        <strong style="color:#f0f6fc">Public URL bypass:</strong> Skips auth for routes containing: <code>emailView</code>, <code>emailResponse</code>, <code>paymentResponse</code>, <code>newsletter</code>, <code>paynow</code>, <code>wb</code>, <code>oms</code>.<br><br>
+        <strong style="color:#f0f6fc">Error handling:</strong> On 401 response, handles gracefully without loop.
+      </div>
+    </div>
+    <div class="interceptor">
+      <div class="order">2nd interceptor</div>
+      <div class="name">HttpConfigInterceptor</div>
+      <div class="desc">Configures standard HTTP request headers and behavior for all requests. Sets content type and base HTTP options.</div>
+    </div>
+    <div class="interceptor">
+      <div class="order">3rd interceptor</div>
+      <div class="name">LoadingInterceptor</div>
+      <div class="desc">Shows a loading spinner/indicator when any HTTP request is in-flight. Hides the spinner when all pending requests complete.</div>
+    </div>
+    <div class="interceptor">
+      <div class="order">4th interceptor</div>
+      <div class="name">EnvironmentInterceptor</div>
+      <div class="desc">
+        Dynamically replaces the API base URL in every request based on the currently selected environment. Reads the target environment from <code>localStorage</code>, enabling runtime API switching without a page reload.
+      </div>
+    </div>
+  </div>
+
+  <h2 id="routing">&#128739; Routing &amp; Feature Guard</h2>
+
+  <h3>FeatureGuard</h3>
+  <p>The <code>FeatureGuard</code> protects routes based on two factors:</p>
+  <ul style="color:#8b949e;font-size:14px;line-height:2;margin-left:20px">
+    <li><strong style="color:#e6edf3">Role check</strong> — user must have one of the required Cognito roles (from JWT groups)</li>
+    <li><strong style="color:#e6edf3">Feature flag check</strong> — the user's entity must have the required feature enabled (e.g. <code>simple_offer</code>, <code>user_management</code>)</li>
+    <li>Redirects to <code>/access-denied</code> if either check fails</li>
+  </ul>
+
+  <h3>All Routes</h3>
+  <table>
+    <thead><tr><th>Path</th><th>Component</th><th>Roles</th><th>Feature Flag</th></tr></thead>
+    <tbody>
+      <tr><td class="route-path">/</td><td>RedirectComponent</td><td><span class="route-public">public</span></td><td>—</td></tr>
+      <tr><td class="route-path">/reservation-management</td><td>ReservationManagmentComponent</td><td><span class="route-res">reservationmanager</span>, admin</td><td>—</td></tr>
+      <tr><td class="route-path">/reservation-management/create-offer</td><td>CreateOfferComponent</td><td><span class="route-admin">admin</span></td><td>simple_offer</td></tr>
+      <tr><td class="route-path">/user-management</td><td>UserMgmtComponent</td><td><span class="route-admin">admin</span></td><td>user_management</td></tr>
+      <tr><td class="route-path">/user-management/create-user</td><td>CreateUserPageComponent</td><td><span class="route-admin">admin</span></td><td>user_management</td></tr>
+      <tr><td class="route-path">/user-management/edit-detail/:id</td><td>EditUserComponent</td><td><span class="route-admin">admin</span></td><td>user_management</td></tr>
+      <tr><td class="route-path">/user-management/user-detail/:id</td><td>UserDetailComponent</td><td><span class="route-admin">admin</span></td><td>user_management</td></tr>
+      <tr><td class="route-path">/role-management</td><td>RoleManagementComponent</td><td><span class="route-admin">admin</span></td><td>role_management</td></tr>
+      <tr><td class="route-path">/role-management/edit-role/:id</td><td>EditRoleComponent</td><td><span class="route-admin">admin</span></td><td>role_management</td></tr>
+      <tr><td class="route-path">/tickets-overview</td><td>TicketsOverviewComponent</td><td><span class="route-res">reservationmanager</span>, admin</td><td>asm_tickets</td></tr>
+      <tr><td class="route-path">/customized-offers</td><td>CustomizedOffersComponent</td><td><span class="route-res">reservationmanager</span>, admin</td><td>custom_offer_creation</td></tr>
+      <tr><td class="route-path">/offers-overview</td><td>OfferOverviewComponent</td><td><span class="route-res">reservationmanager</span>, admin</td><td>offer_overview</td></tr>
+      <tr><td class="route-path">/payment-link-new</td><td>PaymentManagementComponent</td><td><span class="route-res">reservationmanager</span>, admin</td><td>payments_manual_link</td></tr>
+      <tr><td class="route-path">/payments-overview</td><td>PaymentsOverviewComponent</td><td><span class="route-res">reservationmanager</span>, admin</td><td>payments_manual_overview</td></tr>
+      <tr><td class="route-path">/confirmations-overview</td><td>ConfirmationsOverviewComponent</td><td><span class="route-res">reservationmanager</span>, admin</td><td>reservation_confirmations_overview</td></tr>
+      <tr><td class="route-path">/template-management</td><td>TemplateManagementComponent</td><td><span class="route-cms">cms</span></td><td>cms_templates_overview</td></tr>
+      <tr><td class="route-path">/template-management/details/:id</td><td>EditorComponent</td><td><span class="route-cms">cms</span></td><td>cms_templates_edit</td></tr>
+      <tr><td class="route-path">/properties</td><td>PropertyManagementComponent</td><td><span class="route-admin">admin</span></td><td>cms_property_list</td></tr>
+      <tr><td class="route-path">/properties/:id</td><td>EditPropertyPageComponent</td><td><span class="route-admin">admin</span></td><td>cms_property_list</td></tr>
+      <tr><td class="route-path">/seasons</td><td>SeasonsManagementComponent</td><td><span class="route-admin">admin</span></td><td>cms_seasons_list</td></tr>
+      <tr><td class="route-path">/content-updates</td><td>ContentUpdatesComponent</td><td><span class="route-admin">admin</span></td><td>cms_templates_edit</td></tr>
+      <tr><td class="route-path">/greetings</td><td>CmsGreetingsComponent</td><td><span class="route-admin">admin</span></td><td>cms_salutations</td></tr>
+      <tr><td class="route-path">/taxonomy</td><td>TaxonomyComponent</td><td><span class="route-admin">admin</span></td><td>cms_taxonomy</td></tr>
+      <tr><td class="route-path">/settings</td><td>SettingsComponent</td><td><span class="route-res">reservationmanager</span>, admin</td><td>admin_multi_tenant</td></tr>
+      <tr><td class="route-path">/discount-codes</td><td>DiscountCodesComponent</td><td><span class="route-admin">admin</span></td><td>landing_discount_config</td></tr>
+      <tr><td class="route-path">/external-rate-codes</td><td>ExternalRateCodesComponent</td><td><span class="route-admin">admin</span></td><td>cms_property_list</td></tr>
+      <tr><td class="route-path">/experiences/create</td><td>CreateExperienceComponent</td><td><span class="route-admin">admin</span></td><td>experiences_create</td></tr>
+      <tr><td class="route-path">/experiences-overview</td><td>ExperiencesOverviewComponent</td><td><span class="route-admin">admin</span></td><td>experiences_overview</td></tr>
+      <tr><td class="route-path">/eligibility-policies</td><td>EligibilityPoliciesComponent</td><td><span class="route-admin">admin</span></td><td>experiences_policies</td></tr>
+      <tr><td class="route-path">/experience-templates</td><td>ExperienceTemplatesComponent</td><td><span class="route-admin">admin</span></td><td>experiences_templates</td></tr>
+      <tr><td class="route-path">/experience-bookings</td><td>ExperienceBookingsComponent</td><td><span class="route-admin">admin</span></td><td>experiences_bookings</td></tr>
+      <tr><td class="route-path">/oms</td><td>OmsIframeComponent</td><td><span class="route-public">public</span></td><td>—</td></tr>
+      <tr><td class="route-path">/emailResponse/**</td><td>EmailResponseComponent</td><td><span class="route-public">public</span></td><td>—</td></tr>
+      <tr><td class="route-path">/paymentResponse/**</td><td>PaymentResponseComponent</td><td><span class="route-public">public</span></td><td>—</td></tr>
+      <tr><td class="route-path">/newsletter/**</td><td>NewsletterDoubleOptinComponent</td><td><span class="route-public">public</span></td><td>—</td></tr>
+      <tr><td class="route-path">/paynow/**</td><td>PayNowComponent</td><td><span class="route-public">public</span></td><td>—</td></tr>
+      <tr><td class="route-path">/wb/**</td><td>WelcomeBackLandingPageComponent</td><td><span class="route-public">public</span></td><td>—</td></tr>
+      <tr><td class="route-path">/access-denied</td><td>AccessDeniedComponent</td><td><span class="route-public">public</span></td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="components">&#128248; Components by Domain</h2>
+
+  <h3>Reservation Management</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>ReservationManagmentComponent</code></td><td>Main reservation list &amp; management grid</td></tr>
+      <tr><td><code>CreateOfferComponent</code></td><td>Simple offer creation workflow</td></tr>
+      <tr><td><code>CustomizedOffersComponent</code></td><td>Customized/complex offer creation</td></tr>
+      <tr><td><code>OfferOverviewComponent</code></td><td>Overview of all created offers</td></tr>
+      <tr><td><code>GenerateOfferComponent</code></td><td>Offer generation utility</td></tr>
+      <tr><td><code>ConfirmationsOverviewComponent</code></td><td>Booking confirmations list</td></tr>
+    </tbody>
+  </table>
+
+  <h3>User &amp; Role Management</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>UserMgmtComponent</code></td><td>User list grid</td></tr>
+      <tr><td><code>CreateUserPageComponent</code></td><td>Create new user form</td></tr>
+      <tr><td><code>EditUserComponent</code></td><td>Edit existing user</td></tr>
+      <tr><td><code>UserDetailComponent</code></td><td>User detail view</td></tr>
+      <tr><td><code>RoleManagementComponent</code></td><td>Role list</td></tr>
+      <tr><td><code>EditRoleComponent</code></td><td>Edit role &amp; feature assignments</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Content Management (CMS)</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>TemplateManagementComponent</code></td><td>Email template list</td></tr>
+      <tr><td><code>EditorComponent</code></td><td>Monaco Editor-based template editor</td></tr>
+      <tr><td><code>EmailWysiwygComponent</code></td><td>GrapesJS WYSIWYG email builder</td></tr>
+      <tr><td><code>PropertyManagementComponent</code></td><td>Hotel property list</td></tr>
+      <tr><td><code>EditPropertyPageComponent</code></td><td>Edit hotel property details</td></tr>
+      <tr><td><code>RateCodeManagementComponent</code></td><td>Rate codes for properties</td></tr>
+      <tr><td><code>SeasonsManagementComponent</code></td><td>Season configuration</td></tr>
+      <tr><td><code>ContentUpdatesComponent</code></td><td>Content update management</td></tr>
+      <tr><td><code>CmsGreetingsComponent</code></td><td>Salutation/greeting management</td></tr>
+      <tr><td><code>TaxonomyComponent</code></td><td>Tag &amp; category taxonomy</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Experiences</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>ExperiencesOverviewComponent</code></td><td>Experience product list</td></tr>
+      <tr><td><code>CreateExperienceComponent</code></td><td>Create new experience</td></tr>
+      <tr><td><code>EditExperienceComponent</code></td><td>Edit experience</td></tr>
+      <tr><td><code>ExperienceTemplatesComponent</code></td><td>Experience template list</td></tr>
+      <tr><td><code>CreateTemplateComponent</code></td><td>Create experience template</td></tr>
+      <tr><td><code>EditTemplateComponent</code></td><td>Edit experience template</td></tr>
+      <tr><td><code>EligibilityPoliciesComponent</code></td><td>Eligibility policy list</td></tr>
+      <tr><td><code>CreatePolicyComponent</code></td><td>Create eligibility policy</td></tr>
+      <tr><td><code>EditPolicyComponent</code></td><td>Edit eligibility policy</td></tr>
+      <tr><td><code>ExperienceBookingsComponent</code></td><td>Experience booking list</td></tr>
+      <tr><td><code>CreateExperienceBookingComponent</code></td><td>Create/edit experience booking</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Payments &amp; Tickets</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>PaymentManagementComponent</code></td><td>Create manual payment links</td></tr>
+      <tr><td><code>PaymentsOverviewComponent</code></td><td>Payment history &amp; overview</td></tr>
+      <tr><td><code>TicketsOverviewComponent</code></td><td>ASM ticket management</td></tr>
+      <tr><td><code>DiscountCodesComponent</code></td><td>Discount code management</td></tr>
+      <tr><td><code>ExternalRateCodesComponent</code></td><td>External rate code mapping</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Public (No Auth Required)</h3>
+  <table>
+    <thead><tr><th>Component</th><th>Route</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>EmailResponseComponent</code></td><td>/emailResponse/**</td><td>Email action response handler</td></tr>
+      <tr><td><code>PaymentResponseComponent</code></td><td>/paymentResponse/**</td><td>Payment gateway callback page</td></tr>
+      <tr><td><code>NewsletterDoubleOptinComponent</code></td><td>/newsletter/**</td><td>Newsletter double opt-in confirmation</td></tr>
+      <tr><td><code>PayNowComponent</code></td><td>/paynow/**</td><td>Direct payment link page</td></tr>
+      <tr><td><code>WelcomeBackLandingPageComponent</code></td><td>/wb/**</td><td>Guest welcome-back landing page</td></tr>
+      <tr><td><code>OmsIframeComponent</code></td><td>/oms, /emailView/**</td><td>OMS iframe (offer viewer)</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="environments">&#127758; Environment Configuration</h2>
+  <div class="code-block"><pre><span class="c">// src/environments/environment.ts (Development)</span>
+<span class="k">export const</span> environment = {
+  <span class="s">production</span>:        <span class="v">false</span>,
+  <span class="s">apiUrl</span>:            <span class="s">"http://localhost:8080/"</span>,
+  <span class="s">urlBasePath</span>:       <span class="s">"http://localhost:4200/"</span>,
+  <span class="s">urlBasePathAsset</span>:  <span class="s">"http://localhost:4200/"</span>
+};
+
+<span class="c">// src/environments/environment.prod.ts (Production)</span>
+<span class="k">export const</span> environment = {
+  <span class="s">production</span>:        <span class="v">true</span>,
+  <span class="s">apiUrl</span>:            <span class="s">"https://booking.gustaffo.com/"</span>,
+  <span class="s">environment</span>:       <span class="s">"prod"</span>,
+  <span class="s">urlBasePath</span>:       <span class="s">"https://booking-app.gustaffo.com/"</span>,
+  <span class="s">urlBasePathAsset</span>:  <span class="s">"https://booking-service.falkensteiner.com/"</span>
+};</pre></div>
+
+  <h3>Runtime Environment Switcher</h3>
+  <p>The header contains a dropdown allowing users to switch between environments at runtime:</p>
+  <table>
+    <thead><tr><th>Environment</th><th>API URL</th></tr></thead>
+    <tbody>
+      <tr><td>Prod (Stable)</td><td><code>https://booking.gustaffo.com/</code></td></tr>
+      <tr><td>Prod (Preview)</td><td><code>https://interactiveq-prod-next.apps.gustaffo.com/</code></td></tr>
+    </tbody>
+  </table>
+  <p>The selected environment is stored in <code>localStorage</code>. The <code>EnvironmentInterceptor</code> reads it and rewrites the <code>apiUrl</code> in every HTTP request — no page reload required.</p>
+
+  <h2 id="libraries">&#128218; Key Libraries</h2>
+  <table>
+    <thead><tr><th>Library</th><th>Version</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Angular Material</td><td>12.2.13</td><td>UI component library (tables, forms, dialogs)</td></tr>
+      <tr><td>ag-Grid Enterprise</td><td>—</td><td>High-performance data grid for reservations</td></tr>
+      <tr><td>Monaco Editor</td><td>—</td><td>VS Code-based code editor for templates</td></tr>
+      <tr><td>GrapesJS</td><td>—</td><td>WYSIWYG email template builder (MJML)</td></tr>
+      <tr><td>CodeMirror</td><td>—</td><td>Code editor component</td></tr>
+      <tr><td>Akita</td><td>—</td><td>RxJS-based state management</td></tr>
+      <tr><td>NgxHateoasClient</td><td>—</td><td>HATEOAS HAL+JSON REST client</td></tr>
+      <tr><td>AWS Amplify</td><td>4.0.3</td><td>Cognito authentication &amp; session management</td></tr>
+      <tr><td>moment.js</td><td>—</td><td>Date/time manipulation</td></tr>
+      <tr><td>SweetAlert2</td><td>—</td><td>Modal dialogs &amp; confirmations</td></tr>
+      <tr><td>Swiper</td><td>—</td><td>Image/content carousels</td></tr>
+      <tr><td>ngx-owl-carousel</td><td>—</td><td>Carousel component</td></tr>
+      <tr><td>uuid</td><td>—</td><td>Unique ID generation</td></tr>
+      <tr><td>lodash</td><td>—</td><td>Utility functions</td></tr>
+      <tr><td>mustache</td><td>—</td><td>Template string rendering</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    <p>InteractiveQ / Gustaffo Booking Platform &mdash; Frontend Documentation. See <a href="auth-flow.html">Auth &amp; Security</a> for the full login flow.</p>
+  </footer>
+</main>
+</body>
+</html>

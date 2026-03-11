@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InteractiveQ Docs — Backend</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0d1117;color:#c9d1d9;display:flex;min-height:100vh}
+  a{color:#58a6ff;text-decoration:none}a:hover{text-decoration:underline}
+  nav{width:260px;min-height:100vh;background:#161b22;border-right:1px solid #30363d;position:fixed;top:0;left:0;overflow-y:auto;padding:0 0 40px}
+  .nav-logo{padding:20px 20px 16px;border-bottom:1px solid #30363d;margin-bottom:8px}
+  .nav-logo h2{color:#f0f6fc;font-size:15px;font-weight:700}
+  .nav-logo p{color:#8b949e;font-size:11px;margin-top:3px}
+  nav ul{list-style:none;padding:0 8px}
+  nav ul li a{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:6px;color:#8b949e;font-size:13px;transition:all .15s}
+  nav ul li a:hover,nav ul li a.active{background:#1f2937;color:#f0f6fc;text-decoration:none}
+  nav ul li a.active{color:#58a6ff;background:#1a2332}
+  .nav-section{padding:16px 20px 6px;font-size:11px;font-weight:600;color:#8b949e;text-transform:uppercase;letter-spacing:.8px}
+  main{margin-left:260px;flex:1;padding:40px 48px;max-width:1000px}
+  h1{font-size:28px;font-weight:700;color:#f0f6fc;margin-bottom:8px}
+  h2{font-size:22px;font-weight:600;color:#f0f6fc;margin:40px 0 16px;padding-bottom:8px;border-bottom:1px solid #30363d}
+  h3{font-size:15px;font-weight:600;color:#e6edf3;margin:24px 0 10px}
+  p{color:#8b949e;line-height:1.7;margin-bottom:12px;font-size:14px}
+  .breadcrumb{font-size:12px;color:#8b949e;margin-bottom:28px}
+  .breadcrumb span{color:#30363d;margin:0 6px}
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+  .badge-blue{background:#1a2d4a;color:#58a6ff;border:1px solid #1d3a5e}
+  .badge-green{background:#1a3a2a;color:#3fb950;border:1px solid #1e4a30}
+  .badge-orange{background:#3a2000;color:#f0883e;border:1px solid #4a2800}
+  .badge-purple{background:#2d1a4a;color:#bc8cff;border:1px solid #3d1f5e}
+  .badge-red{background:#3a1a1a;color:#f85149;border:1px solid #5e2020}
+  .badge-yellow{background:#2d2000;color:#d29922;border:1px solid #3d2800}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px}
+  th{background:#161b22;color:#8b949e;font-weight:600;text-align:left;padding:10px 14px;border-bottom:1px solid #30363d;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+  td{padding:10px 14px;border-bottom:1px solid #21262d;color:#c9d1d9;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#161b22}
+  .code-block{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;margin:12px 0;overflow-x:auto}
+  .code-block pre{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px;line-height:1.7;color:#e6edf3}
+  .c{color:#8b949e}.s{color:#a5d6ff}.k{color:#ff7b72}.n{color:#ffa657}.v{color:#79c0ff}
+  .info-box{background:#0d1b2a;border:1px solid #1d3a5e;border-radius:8px;padding:16px 20px;margin:16px 0}
+  .info-box h4{color:#58a6ff;font-size:13px;font-weight:600;margin-bottom:8px}
+  .info-box p{font-size:13px;color:#8b949e;margin:0}
+  .warn-box{background:#1f1200;border:1px solid #4a2800;border-radius:8px;padding:16px 20px;margin:16px 0}
+  .warn-box h4{color:#f0883e;font-size:13px;font-weight:600;margin-bottom:8px}
+  .warn-box p{font-size:13px;color:#8b949e;margin:0}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:16px 0}
+  .module-card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px;font-size:12px}
+  .module-card .name{color:#f0f6fc;font-weight:600;font-family:monospace;margin-bottom:4px}
+  .module-card .desc{color:#8b949e;line-height:1.4}
+  code{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px;background:#161b22;padding:1px 5px;border-radius:4px;color:#a5d6ff}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+  .dot-green{background:#3fb950}.dot-orange{background:#f0883e}
+  footer{margin-top:60px;padding-top:20px;border-top:1px solid #21262d;color:#8b949e;font-size:12px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">
+    <h2>InteractiveQ Docs</h2>
+    <p>Gustaffo Booking Platform</p>
+  </div>
+  <div class="nav-section">Navigation</div>
+  <ul>
+    <li><a href="index.html">&#127968; Overview</a></li>
+    <li><a href="backend.html" class="active">&#9096; Backend (Spring Boot)</a></li>
+    <li><a href="frontend.html">&#9655; Frontend (Angular)</a></li>
+    <li><a href="auth-flow.html">&#128274; Auth &amp; Security</a></li>
+    <li><a href="api-reference.html">&#128196; API Reference</a></li>
+  </ul>
+  <div class="nav-section" style="margin-top:20px">Sections</div>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#startup">Entry Point</a></li>
+    <li><a href="#modules">Domain Modules</a></li>
+    <li><a href="#database">Database</a></li>
+    <li><a href="#security">Security</a></li>
+    <li><a href="#aws">AWS Integrations</a></li>
+    <li><a href="#connectors">External Connectors</a></li>
+    <li><a href="#config">Configuration</a></li>
+  </ul>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="index.html">InteractiveQ Docs</a> <span>›</span> Backend</div>
+  <h1>&#9096; Backend — Spring Boot API</h1>
+  <p>Java 17 + Spring Boot 2.5.15 REST API powering all booking, reservation, payment and content management operations.</p>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px">
+    <span class="badge badge-blue">Java 17</span>
+    <span class="badge badge-blue">Spring Boot 2.5.15</span>
+    <span class="badge badge-orange">Port 8080</span>
+    <span class="badge badge-green">Maven</span>
+    <span class="badge badge-purple">OAuth2 JWT</span>
+  </div>
+
+  <h2 id="overview">&#128209; Project Overview</h2>
+  <table>
+    <tbody>
+      <tr><td style="width:180px;color:#8b949e;font-size:12px">Project folder</td><td><code>cognitoConfig/interactiveq/app/</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Artifact ID</td><td><code>interactiveq-app</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Version</td><td><code>3.1.1</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Base package</td><td><code>com.gustaffo.reservations</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Server port</td><td><code>8080</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Swagger UI</td><td><code>http://localhost:8080/swagger.html</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">API docs JSON</td><td><code>http://localhost:8080/api-docs</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Health check</td><td><code>http://localhost:8080/actuator/health</code></td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Response format</td><td><code>application/hal+json</code> (HATEOAS)</td></tr>
+      <tr><td style="color:#8b949e;font-size:12px">Max upload</td><td>10 MB</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="startup">&#9654; Entry Point</h2>
+  <p>The application starts from <code>InteractiveQApp.java</code> with scheduling enabled.</p>
+  <div class="code-block"><pre><span class="c">// interactiveq/app/src/main/java/com/gustaffo/reservations/InteractiveQApp.java</span>
+
+<span class="k">@SpringBootApplication</span>
+<span class="k">@EnableScheduling</span>
+<span class="k">public class</span> <span class="n">InteractiveQApp</span> {
+    <span class="k">public static void</span> <span class="n">main</span>(String[] args) {
+        SpringApplication.run(InteractiveQApp.class, args);
+    }
+}</pre></div>
+
+  <div class="info-box">
+    <h4>&#9432; Running the backend</h4>
+    <p>Navigate to <code>interactiveq/app/</code> and run <code>./mvnw spring-boot:run</code> or build with <code>./mvnw clean package</code> then <code>java -jar target/interactiveq-app-3.1.1.jar</code></p>
+  </div>
+
+  <h2 id="modules">&#128230; Domain Modules</h2>
+  <p>Business logic is organized into domain packages under <code>com.gustaffo.reservations</code>:</p>
+  <div class="module-grid">
+    <div class="module-card"><div class="name">offers</div><div class="desc">Booking offers — simple &amp; customized offer creation, widget endpoints</div></div>
+    <div class="module-card"><div class="name">experiences</div><div class="desc">Experience products, bookings, templates, eligibility policies</div></div>
+    <div class="module-card"><div class="name">payment</div><div class="desc">Saferpay payment processing, payment links, configuration</div></div>
+    <div class="module-card"><div class="name">confirmations</div><div class="desc">Booking confirmations, newsletter double opt-in</div></div>
+    <div class="module-card"><div class="name">cms</div><div class="desc">Content: QR codes, greetings, property data, seasons</div></div>
+    <div class="module-card"><div class="name">asm</div><div class="desc">Activity &amp; Ticketing System — ticket widget, management</div></div>
+    <div class="module-card"><div class="name">mail</div><div class="desc">Transactional emails via AWS SES + Mustache templates</div></div>
+    <div class="module-card"><div class="name">notifications</div><div class="desc">Event-driven notification system</div></div>
+    <div class="module-card"><div class="name">loyalty</div><div class="desc">Guest loyalty program (partially disabled in UI)</div></div>
+    <div class="module-card"><div class="name">vouchers</div><div class="desc">Voucher management (UI disabled)</div></div>
+    <div class="module-card"><div class="name">rbac</div><div class="desc">Roles, features, entity permissions (REST exposed)</div></div>
+    <div class="module-card"><div class="name">connectors</div><div class="desc">PMS/IBE: Phobs, TravelClick, Apaleo, IATA</div></div>
+    <div class="module-card"><div class="name">rules</div><div class="desc">Rules engine (UI commented out)</div></div>
+    <div class="module-card"><div class="name">security</div><div class="desc">JWT auth, API key filter, Cognito config</div></div>
+    <div class="module-card"><div class="name">configuration</div><div class="desc">Spring configs: cache, DB, Cognito, API keys</div></div>
+    <div class="module-card"><div class="name">controller</div><div class="desc">REST controllers: Contact, Payment, Saferpay, Frontend</div></div>
+  </div>
+
+  <h2 id="database">&#128451; Database</h2>
+  <h3>Primary Connection (Read/Write)</h3>
+  <div class="code-block"><pre><span class="c"># application.yml</span>
+<span class="k">url:</span> <span class="s">jdbc:postgresql://dev-db-instance.ceqj8yyjmucj.eu-central-1.rds.amazonaws.com:5432/fmtg_apps</span>
+      <span class="s">?currentSchema=booking_service</span>
+<span class="k">username:</span> <span class="s">postgres</span>
+<span class="k">driver:</span>   <span class="s">org.postgresql.Driver</span>
+
+<span class="c"># Hikari Pool Settings</span>
+<span class="k">maximum-pool-size:</span> <span class="v">50</span>
+<span class="k">minimum-idle:</span>      <span class="v">10</span>
+<span class="k">connection-timeout:</span> <span class="v">30000</span>   <span class="c"># 30s</span>
+<span class="k">idle-timeout:</span>       <span class="v">300000</span>  <span class="c"># 5min</span>
+<span class="k">max-lifetime:</span>       <span class="v">1200000</span> <span class="c"># 20min</span></pre></div>
+
+  <h3>Read-Only Replica</h3>
+  <div class="code-block"><pre><span class="c"># Same RDS host, separate credentials, read-only pool</span>
+<span class="k">username:</span>          <span class="s">dashboard_readonly</span>
+<span class="k">maximum-pool-size:</span> <span class="v">10</span>
+<span class="k">minimum-idle:</span>      <span class="v">2</span>
+<span class="k">read-only:</span>         <span class="v">true</span></pre></div>
+
+  <table>
+    <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td>Host</td><td><code>dev-db-instance.ceqj8yyjmucj.eu-central-1.rds.amazonaws.com</code></td></tr>
+      <tr><td>Port</td><td><code>5432</code></td></tr>
+      <tr><td>Database</td><td><code>fmtg_apps</code></td></tr>
+      <tr><td>Schema</td><td><code>booking_service</code></td></tr>
+      <tr><td>DDL strategy</td><td><code>validate</code> (Flyway manages schema)</td></tr>
+      <tr><td>Migrations</td><td>Flyway with out-of-order &amp; retry support</td></tr>
+      <tr><td>Batch size</td><td>30 (JDBC &amp; Hibernate)</td></tr>
+      <tr><td>SQL logging</td><td>Disabled in production</td></tr>
+      <tr><td>Custom dialect</td><td><code>PgFullTextDialect</code> (PostgreSQL full-text search)</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="security">&#128274; Security Configuration</h2>
+  <p>See <a href="auth-flow.html">Auth &amp; Security</a> for the full authentication flow. Summary of the security setup:</p>
+
+  <h3>Three Authentication Methods</h3>
+  <table>
+    <thead><tr><th>Method</th><th>How it works</th><th>Roles granted</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-blue">JWT (Cognito)</span></td>
+        <td>Bearer token in <code>Authorization</code> header. Validated against Cognito issuer URI. Groups extracted from <code>cognito:groups</code> JWT claim.</td>
+        <td>From Cognito user groups → <code>ROLE_admin</code>, <code>ROLE_cms</code>, <code>ROLE_reservationmanager</code>, etc.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-orange">API Key</span></td>
+        <td>API key in request header, validated by <code>APIKeyAuthFilter</code>. Keys configured in <code>application.yml</code>.</td>
+        <td><code>ROLE_admin</code>, <code>ROLE_web</code>, <code>ROLE_currency_config</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-yellow">Basic Auth (Ops)</span></td>
+        <td>In-memory user (<code>fmtg_manager</code>). Password BCrypt-hashed. Used for <code>/ops*</code> endpoints.</td>
+        <td><code>ROLE_admin</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Security Rules (HttpSecurity)</h3>
+  <div class="code-block"><pre><span class="c">// WebApplicationSecurityConfig.java — key rules:</span>
+
+<span class="c">// 1. CORS enabled, CSRF disabled (stateless JWT API)</span>
+http.cors().and().csrf().disable()
+    .sessionManagement().sessionCreationPolicy(STATELESS)
+
+<span class="c">// 2. Public endpoints — no auth required:</span>
+.antMatchers(<span class="s">"/bookOffer*"</span>, <span class="s">"/offerRequest*"</span>, <span class="s">"/offerRequestWidget/**"</span>,
+             <span class="s">"/emailTemplate/**"</span>, <span class="s">"/captcha/**"</span>, <span class="s">"/payments/**"</span>,
+             <span class="s">"/notifications/**"</span>, <span class="s">"/confirmations/newsletter/**"</span>,
+             <span class="s">"/p/cms/templates/**"</span>, <span class="s">"/landing/**"</span>,
+             <span class="s">"/bookCustomizedOffer/**"</span>, <span class="s">"/sse/availableRoomTypes/**"</span>,
+             <span class="s">"/cms/qr/**"</span>, <span class="s">"/asm/tickets/widget"</span>,
+             <span class="s">"/swagger-ui/**"</span>, <span class="s">"/actuator/**"</span>).permitAll()
+
+<span class="c">// 3. Admin-only endpoints:</span>
+.antMatchers(<span class="s">"/ops*"</span>, <span class="s">"/ops/**"</span>).hasAuthority(<span class="s">"ROLE_admin"</span>)
+
+<span class="c">// 4. Everything else requires any authentication:</span>
+.anyRequest().authenticated()</pre></div>
+
+  <h3>JWT Authority Mapping</h3>
+  <div class="code-block"><pre><span class="c">// Cognito JWT claim → Spring Security authorities</span>
+authoritiesClaimName = <span class="s">"cognito:groups"</span>
+authorityPrefix      = <span class="s">"ROLE_"</span>
+
+<span class="c">// Example: JWT contains cognito:groups: ["admin", "cms"]</span>
+<span class="c">// Results in Spring authorities: ROLE_admin, ROLE_cms</span></pre></div>
+
+  <h3>API Keys (from application.yml)</h3>
+  <table>
+    <thead><tr><th>Key prefix</th><th>Role granted</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td><code>Gustaffo_s8MPoyXl...</code></td><td><span class="badge badge-red">ROLE_admin</span></td><td>Admin API operations</td></tr>
+      <tr><td><code>Gustaffo_3S3bh9rv...</code></td><td><span class="badge badge-blue">ROLE_web</span></td><td>Web/public API calls</td></tr>
+      <tr><td><code>Gustaffo_bpbVs9Ou...</code></td><td><span class="badge badge-purple">ROLE_currency_config</span></td><td>Currency configuration</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="aws">&#9729; AWS Integrations</h2>
+  <table>
+    <thead><tr><th>Service</th><th>Purpose</th><th>Resource</th></tr></thead>
+    <tbody>
+      <tr><td>S3 (Resources)</td><td>General assets, templates, frontend forms</td><td><code>gustaffo.resources</code></td></tr>
+      <tr><td>S3 (Hotel Images)</td><td>Hotel property images</td><td><code>gustaffo.interactiveq.hotel-images</code></td></tr>
+      <tr><td>CloudFront</td><td>CDN for hotel images</td><td><code>d2q3w1brqhgz0q.cloudfront.net</code></td></tr>
+      <tr><td>SES</td><td>Transactional email delivery</td><td><code>email-smtp.eu-central-1.amazonaws.com:587</code></td></tr>
+      <tr><td>Cognito</td><td>JWT token issuer / user pool</td><td>Pool: <code>eu-central-1_8Db4kY02L</code></td></tr>
+      <tr><td>RDS</td><td>PostgreSQL database</td><td>Region: <code>eu-central-1</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Google Drive Integration</h3>
+  <div class="code-block"><pre><span class="c"># Email templates are stored in Google Drive (Mustache format)</span>
+templates.path:  services/fmtg-booking-request-handler/templates/
+templates.query: <span class="s">"'1qJXvi0Gvd28P_oZ_xOnmLI1vJMyHdtrM' in parents and name contains '.mustache'"</span>
+
+<span class="c"># Spreadsheets (translations, Spirit Club members)</span>
+fixedTranslations: <span class="s">"1y7Uw60fxGXl4S8WbzehvvE2laqQfONrsX-IYVZlw6cE"</span>
+spiritClubMembers: <span class="s">"spirit_club_members.csv"</span></pre></div>
+
+  <h2 id="connectors">&#9878; External Connectors</h2>
+  <table>
+    <thead><tr><th>Connector</th><th>Host</th><th>Purpose</th><th>Auth</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Phobs</strong></td>
+        <td><code>secure.phobs.net/webservice/pconnect/service.php</code></td>
+        <td>PMS (Property Management System) integration for availability &amp; reservations</td>
+        <td>Username/password in request body. Site ID: <code>falk_gustaffo_siteID_01</code></td>
+      </tr>
+      <tr>
+        <td><strong>TravelClick</strong></td>
+        <td><code>api.travelclick.com</code></td>
+        <td>IBE (Internet Booking Engine) availability API</td>
+        <td>OAuth token from <code>brandbar.travelclick.com/auth</code>. TTL: 10min</td>
+      </tr>
+      <tr>
+        <td><strong>Saferpay</strong></td>
+        <td><code>www.saferpay.com/api</code></td>
+        <td>Payment gateway for credit card processing</td>
+        <td>API credentials in application.yml</td>
+      </tr>
+      <tr>
+        <td><strong>Apaleo</strong></td>
+        <td><code>api-payone-connector.uat.apps.gustaffo.com/api/v1</code></td>
+        <td>PMS connector (Payone integration)</td>
+        <td>API key header</td>
+      </tr>
+      <tr>
+        <td><strong>IATA</strong></td>
+        <td><code>api.iata.apps.gustaffo.com</code></td>
+        <td>IATA agency validation</td>
+        <td>API key header</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="config">&#9881; Key Configuration Reference</h2>
+  <h3>Email (AWS SES)</h3>
+  <div class="code-block"><pre><span class="k">spring.mail:</span>
+  <span class="k">host:</span>        <span class="s">email-smtp.eu-central-1.amazonaws.com</span>
+  <span class="k">port:</span>        <span class="v">587</span>
+  <span class="k">from-address:</span> <span class="s">holiday@falkensteiner.com</span>
+  <span class="k">smtp.auth:</span>   <span class="v">true</span>
+  <span class="k">starttls:</span>    <span class="v">true</span>
+
+<span class="k">fmtg.mail:</span>
+  <span class="k">maintainer:</span> <span class="s">eni@gustaffo.com</span>
+  <span class="k">b2b.sales:</span>  <span class="s">travelpartner@reservations.falkensteiner.com</span></pre></div>
+
+  <h3>Application URLs</h3>
+  <div class="code-block"><pre><span class="k">fmtg:</span>
+  <span class="k">url:</span>         <span class="s">https://booking-app.gustaffo.com/</span>       <span class="c"># Frontend app</span>
+  <span class="k">urlFrontend:</span> <span class="s">https://booking-service.falkensteiner.com/</span> <span class="c"># Customer-facing</span>
+  <span class="k">api:</span>         <span class="s">https://booking.gustaffo.com/</span>           <span class="c"># API base</span></pre></div>
+
+  <h3>Key Dependencies</h3>
+  <table>
+    <thead><tr><th>Dependency</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>spring-boot-starter-security</code></td><td>Security framework</td></tr>
+      <tr><td><code>spring-security-oauth2-resource-server</code></td><td>JWT validation</td></tr>
+      <tr><td><code>spring-boot-starter-data-jpa</code></td><td>ORM / database access</td></tr>
+      <tr><td><code>spring-boot-starter-data-rest</code></td><td>HATEOAS REST endpoints</td></tr>
+      <tr><td><code>postgresql</code></td><td>PostgreSQL JDBC driver</td></tr>
+      <tr><td><code>flyway-core</code></td><td>Database migrations</td></tr>
+      <tr><td><code>aws-java-sdk-*</code></td><td>S3, Cognito, SES (SDK v1)</td></tr>
+      <tr><td><code>software.amazon.awssdk.*</code></td><td>AWS SDK v2 (newer services)</td></tr>
+      <tr><td><code>springdoc-openapi-ui</code></td><td>Swagger / OpenAPI docs</td></tr>
+      <tr><td><code>bcryptjs (BCryptPasswordEncoder)</code></td><td>Password hashing for Basic Auth</td></tr>
+      <tr><td><code>mustache</code></td><td>Email template rendering</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn-box">
+    <h4>&#9888; Scheduled Tasks</h4>
+    <p><code>@EnableScheduling</code> is active. The application runs background jobs — check for <code>@Scheduled</code> annotations in service classes for recurring tasks (e.g. email sending, rate cache refresh).</p>
+  </div>
+
+  <footer>
+    <p>InteractiveQ / Gustaffo Booking Platform &mdash; Backend Documentation. See <a href="auth-flow.html">Auth &amp; Security</a> for detailed authentication flow.</p>
+  </footer>
+</main>
+</body>
+</html>
